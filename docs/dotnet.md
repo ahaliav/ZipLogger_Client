@@ -72,3 +72,19 @@ Log.Logger = new LoggerConfiguration()
 `ZipLoggerClientOptions`: `QueueCapacity`, `BatchSize`, `FlushInterval`, `MaxRetries`,
 `RetryBaseDelay`/`RetryMaxDelay`, `HttpTimeout`, `ShutdownTimeout`, `Tags`, plus the enrichment
 overrides above. The ILogger provider adds `IncludeScopes` / `IncludeCategory`.
+
+## Request metrics (APM)
+
+Package: `ZipLogger.Metrics.AspNetCore` — a middleware that times every request and powers the
+**Metrics** page's avg/p95 latency and throughput series per service:
+
+```csharp
+builder.Services.AddZipLoggerMetrics(builder.Configuration, service: "orders-api");
+var app = builder.Build();
+app.UseZipLoggerMetrics();   // early, so timings cover the whole pipeline
+```
+
+It reuses your `ZipLogger:Endpoint` / `ZipLogger:ApiKey` settings (overridable under
+`ZipLogger:Metrics`), attaches `method` / `route` (the route *pattern*, keeping label cardinality
+low) / `status` labels, and follows the same delivery semantics as the log clients — bounded
+queue, batching, 429-aware retries, never blocks a request, no-op when unconfigured.

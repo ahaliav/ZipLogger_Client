@@ -28,6 +28,7 @@ instance's origin everywhere below.
 | Guide | Package |
 |---|---|
 | [.NET](docs/dotnet.md) — `ILogger` provider + Serilog sink | `ZipLogger.Extensions.Logging`, `ZipLogger.Serilog` |
+| [.NET request metrics (APM)](docs/dotnet.md#request-metrics-apm) — avg/p95 latency middleware | `ZipLogger.Metrics.AspNetCore` |
 | [Python](docs/python.md) — stdlib `logging` handler | `ziplogger` (pip) |
 | [Node.js](docs/nodejs.md) — core client + Pino & Winston transports | `ziplogger` (npm) |
 | [Go](docs/go.md) — client + `log/slog` handler | `ziplogger` (Go module) |
