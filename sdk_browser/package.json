@@ -1,0 +1,46 @@
+{
+  "name": "@ziplogger/browser",
+  "version": "0.3.3",
+  "description": "ZipLogger browser SDK \u2014 capture console errors, unhandled rejections, and custom events from web apps, with a React error boundary. Zero dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./react": {
+      "types": "./index.d.ts",
+      "default": "./react.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/client.test.mjs"
+  },
+  "keywords": [
+    "ziplogger",
+    "logging",
+    "browser",
+    "react",
+    "error-tracking"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahaliav/ZipLogger_Client.git",
+    "directory": "sdk_browser"
+  },
+  "homepage": "https://ziplogger.dev",
+  "bugs": {
+    "url": "https://github.com/ahaliav/ZipLogger_Client/issues"
+  },
+  "author": "Ahaliav Fox",
+  "files": [
+    "README.md",
+    "index.d.ts",
+    "index.js",
+    "react.js"
+  ]
+}

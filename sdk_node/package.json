@@ -1,0 +1,64 @@
+{
+  "name": "ziplogger",
+  "version": "0.3.3",
+  "description": "ZipLogger Node.js SDK \u2014 core client plus Pino and Winston transports. Batching, retries, backpressure, automatic enrichment.",
+  "license": "MIT",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./winston": {
+      "types": "./index.d.ts",
+      "default": "./winston.js"
+    },
+    "./pino": {
+      "types": "./index.d.ts",
+      "default": "./pino.js"
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/client.test.mjs"
+  },
+  "keywords": [
+    "ziplogger",
+    "logging",
+    "pino",
+    "winston",
+    "observability"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahaliav/ZipLogger_Client.git",
+    "directory": "sdk_node"
+  },
+  "peerDependencies": {
+    "pino-abstract-transport": ">=1",
+    "winston-transport": ">=4"
+  },
+  "peerDependenciesMeta": {
+    "pino-abstract-transport": {
+      "optional": true
+    },
+    "winston-transport": {
+      "optional": true
+    }
+  },
+  "homepage": "https://ziplogger.dev",
+  "bugs": {
+    "url": "https://github.com/ahaliav/ZipLogger_Client/issues"
+  },
+  "author": "Ahaliav Fox",
+  "files": [
+    "README.md",
+    "index.d.ts",
+    "index.js",
+    "pino.js",
+    "winston.js"
+  ]
+}

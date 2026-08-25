@@ -53,6 +53,22 @@ Your log is searchable within seconds.
 | [Query API](docs/query-api.md) | Read logs, traces, metrics, and patterns back out programmatically |
 | [Configuration reference](docs/configuration.md) | Every `ZIPLOGGER_*` environment variable and option, side by side |
 
+## SDK source
+
+The SDKs themselves live in this repository, so you can read exactly what runs inside your app:
+
+| Language | Source | Install |
+|---|---|---|
+| Python | [`sdk_python/`](sdk_python) | `pip install ziplogger` |
+| Node.js | [`sdk_node/`](sdk_node) | `npm install ziplogger` |
+| Browser / React | [`sdk_browser/`](sdk_browser) | `npm install @ziplogger/browser` |
+| Go | [`sdk_go/`](sdk_go) | `go get github.com/ahaliav/ZipLogger_Client/sdk_go` |
+| Java | [`sdk_java/`](sdk_java) | `dev.ziplogger:ziplogger` (Maven Central) |
+| .NET | published from the platform repo | `dotnet add package ZipLogger.Extensions.Logging` |
+
+All packages are MIT licensed and share one version number (currently 0.3.3). Every package is
+dependency-free apart from the optional Pino and Winston peer packages in the Node SDK.
+
 ## Shared delivery semantics
 
 Every official SDK behaves the same way, so you can trust them in production:

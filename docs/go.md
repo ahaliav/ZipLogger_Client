@@ -4,11 +4,11 @@ A standard-library-only client with a first-class `log/slog` handler. Batching, 
 (429-aware), drop-on-backpressure, automatic enrichment. Go 1.21 or newer, zero dependencies.
 
 ```bash
-go get github.com/ahaliav/ziplogger/sdk_go
+go get github.com/ahaliav/ZipLogger_Client/sdk_go
 ```
 
 ```go
-import ziplogger "github.com/ahaliav/ziplogger/sdk_go"
+import ziplogger "github.com/ahaliav/ZipLogger_Client/sdk_go"
 ```
 
 ## slog (recommended)

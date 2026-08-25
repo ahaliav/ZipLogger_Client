@@ -1,0 +1,109 @@
+name: Publish SDKs
+
+# Publishes whichever SDKs a tag asks for. Tag formats:
+#   v0.3.3            -> publish every registry (npm x2, PyPI, Maven Central)
+#   npm-v0.3.3        -> npm only          (ziplogger + @ziplogger/browser)
+#   pypi-v0.3.3       -> PyPI only         (ziplogger)
+#   maven-v0.3.3      -> Maven Central only (dev.ziplogger:ziplogger)
+#   sdk_go/v0.3.3     -> Go module tag; nothing to publish, the proxy reads the repo
+#
+# Secrets required (repository settings -> Secrets and variables -> Actions):
+#   NPM_TOKEN              npm automation token with publish rights
+#   MAVEN_CENTRAL_USERNAME Sonatype Central portal token username
+#   MAVEN_CENTRAL_PASSWORD Sonatype Central portal token password
+#   MAVEN_GPG_KEY          ASCII-armored private GPG key (Central requires signed artifacts)
+#   MAVEN_GPG_PASSPHRASE   passphrase for that key
+# PyPI uses Trusted Publishing (OIDC), so it needs no secret at all.
+
+on:
+  push:
+    tags: ['v*', 'npm-v*', 'pypi-v*', 'maven-v*']
+  workflow_dispatch:
+
+jobs:
+  npm:
+    if: startsWith(github.ref_name, 'v') || startsWith(github.ref_name, 'npm-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Test node SDK
+        working-directory: sdk_node
+        run: npm test
+      - name: Test browser SDK
+        working-directory: sdk_browser
+        run: npm test
+      - name: Publish ziplogger
+        working-directory: sdk_node
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish @ziplogger/browser
+        working-directory: sdk_browser
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  pypi:
+    if: startsWith(github.ref_name, 'v') || startsWith(github.ref_name, 'pypi-v')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # Trusted Publishing: no API token needed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Test
+        working-directory: sdk_python
+        run: python -m unittest discover -s tests -q
+      - name: Build sdist + wheel
+        working-directory: sdk_python
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sdk_python/dist
+
+  maven:
+    if: startsWith(github.ref_name, 'v') || startsWith(github.ref_name, 'maven-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Test
+        working-directory: sdk_java
+        run: mvn -B -q test
+      - name: Publish to Maven Central
+        working-directory: sdk_java
+        run: mvn -B -P release deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+  go:
+    # Nothing to upload: the Go module proxy serves straight from this public repo.
+    # This job just proves the tagged commit builds and passes its tests.
+    if: startsWith(github.ref_name, 'v') || startsWith(github.ref_name, 'sdk_go/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.22' }
+      - working-directory: sdk_go
+        run: |
+          go vet ./...
+          go test ./...

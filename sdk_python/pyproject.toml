@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ziplogger"
+version = "0.3.3"
+description = "Python logging handler for ZipLogger: batching, retries, backpressure, and automatic enrichment. Standard library only."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Ahaliav Fox" }]
+keywords = ["logging", "ziplogger", "observability", "logs"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: System :: Logging",
+]
+
+[project.urls]
+Homepage = "https://ziplogger.dev"
+Documentation = "https://github.com/ahaliav/ZipLogger_Client/blob/main/docs/python.md"
+Source = "https://github.com/ahaliav/ZipLogger_Client"
+Issues = "https://github.com/ahaliav/ZipLogger_Client/issues"
+
+[tool.setuptools.packages.find]
+include = ["ziplogger*"]

@@ -1,0 +1,9 @@
+# build output
+dist/
+build/
+*.egg-info/
+target/
+out/
+node_modules/
+*.tgz
+__pycache__/
