@@ -3,8 +3,9 @@
 Everything in this repository is packaging-ready and CI-wired. What remains are the account steps
 that need a human with the registry logins. Do them once; afterwards every release is a git tag.
 
-Current state at 0.3.3: **NuGet, the Go proxy, and PyPI are live**. Maven Central is set up and
-publishing. npm is the only one still waiting on an account, so `NPM_TOKEN` is the last blocker.
+Current state at 0.3.3: **every registry is live** (NuGet, npm x2, PyPI, Maven Central, and the Go
+proxy), each verified by installing the published package and running it. The accounts below are
+already set up, so future releases are a tag and nothing else.
 
 | Registry | Package | Account work needed | Then publishing is |
 |---|---|---|---|
@@ -19,8 +20,12 @@ publishing. npm is the only one still waiting on an account, so `NPM_TOKEN` is t
 1. Create an account at <https://www.npmjs.com/signup> and enable 2FA.
 2. Create the organization `ziplogger` (<https://www.npmjs.com/org/create>, free for public
    packages). This reserves the `@ziplogger/*` scope used by the browser SDK.
-3. Create an access token: **Access Tokens → Generate New Token → Granular**, with
-   *Read and write* on packages. Copy it.
+3. Create an access token: **Access Tokens → Generate New Token → Granular**, with *Read and write*
+   on packages and on the `ziplogger` org. Under **Security settings**, check **Bypass two-factor
+   authentication (2FA)**. Without that box every publish fails with a 403 reading "Two-factor
+   authentication or granular access token with bypass 2fa enabled is required", after the run has
+   already built and signed the package. The box can also be ticked later by editing the token,
+   which leaves the token value unchanged, so the GitHub secret does not need updating.
 4. In this repository: **Settings → Secrets and variables → Actions → New repository secret**,
    name `NPM_TOKEN`, paste the token.
 
