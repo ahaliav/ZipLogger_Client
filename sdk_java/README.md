@@ -8,7 +8,7 @@ drop-on-backpressure, automatic enrichment. **Zero dependencies.**
 <dependency>
   <groupId>dev.ziplogger</groupId>
   <artifactId>ziplogger</artifactId>
-  <version>0.1.0</version>
+  <version>0.3.3</version>
 </dependency>
 ```
 
