@@ -31,6 +31,9 @@ repository, so "which commit broke this?" resolves to an actual change.
 - **checkout** applies a promo code that has no configured discount rate
 - **storefront** reads `.items` off a null cart, uncaught, the way front-end bugs really happen
 
+Deploying this on a server behind a hostname, with a read-only login to share with
+clients, is covered in [DEPLOY.md](DEPLOY.md).
+
 ## Running it
 
 ```bash
