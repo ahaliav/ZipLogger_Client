@@ -11,7 +11,7 @@ import java.util.logging.LogRecord;
  *
  * <pre>{@code
  * var client = new ZipLoggerClient(new ZipLoggerClient.Options(
- *     "https://logs.yourcompany.com", "zk_..."));
+ *     "https://app.ziplogger.dev", "zk_..."));
  * Logger.getLogger("").addHandler(new ZipLoggerJulHandler(client));
  * }</pre>
  *
