@@ -3,8 +3,8 @@
 Everything in this repository is packaging-ready and CI-wired. What remains are the account steps
 that need a human with the registry logins. Do them once; afterwards every release is a git tag.
 
-Current state: all package names are free and reserved by nobody, versions are aligned at **0.3.3**
-(matching the .NET packages already on NuGet), and each package builds and passes its tests locally.
+Current state at 0.3.3: **NuGet, the Go proxy, and PyPI are live**. Maven Central is set up and
+publishing. npm is the only one still waiting on an account, so `NPM_TOKEN` is the last blocker.
 
 | Registry | Package | Account work needed | Then publishing is |
 |---|---|---|---|
@@ -44,15 +44,34 @@ Trusted Publishing is worth the extra step: there is no long-lived API token to 
 2. Claim the namespace `dev.ziplogger`: **Namespaces → Add Namespace → dev.ziplogger**. Central
    will show a TXT record to add to the `ziplogger.dev` DNS zone (in Cloudflare: DNS → Records →
    Add record → TXT, name `@`, value as shown). Click Verify once it propagates.
-3. Generate a publishing token: **View Account → Generate User Token**. It gives a username and
-   password pair.
-4. Create a GPG key for signing (Central rejects unsigned artifacts):
+3. Generate a publishing token at <https://central.sonatype.com/usertoken> and click
+   **Generate User Token**. A modal shows a username and password pair. Copy both immediately: the
+   modal cannot be reopened, and a lost token can only be replaced. These two values are
+   `MAVEN_CENTRAL_USERNAME` and `MAVEN_CENTRAL_PASSWORD`, not your login email and password.
+4. Create a GPG key for signing (Central rejects unsigned artifacts). Run these in Git Bash, one at
+   a time; each pops a pinentry window for the passphrase. The key id is the hex string after
+   `rsa4096/` on the `sec` line. Note which half goes where: the **public** key goes to a keyserver
+   so Central can check the signatures, the **private** key goes into the GitHub secret so CI can
+   produce them.
 
    ```bash
-   gpg --quick-generate-key "Ahaliav Fox <ahaliav.fox@diamonds.net>" rsa4096 sign 2y
-   gpg --list-secret-keys --keyid-format=long          # note the key id
-   gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID>   # Central verifies against a keyserver
-   gpg --armor --export-secret-keys <KEY_ID> > private-key.asc # paste this file into the secret
+   gpg --quick-generate-key "Your Name <you@example.com>" rsa4096 sign 2y
+   gpg --list-secret-keys --keyid-format=long              # note the key id
+   gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID>   # public half
+   cd ~ && gpg --armor --export-secret-keys <KEY_ID> > private-key.asc   # private half
+   cat ~/private-key.asc | clip                           # straight to the clipboard
+   ```
+
+   Export the private key somewhere that does not sync: a OneDrive-backed Desktop would upload it.
+   Delete `private-key.asc` once the secret is saved; the key stays in `~/.gnupg`.
+
+   **Verify the keyserver upload actually landed.** `--send-keys` exits 0 even when dirmngr could
+   not reach the server, and the only symptom is Central rejecting every `.asc` file with "Could not
+   find a public key by the key fingerprint" after a full build. A 200 here means Central can see it:
+
+   ```bash
+   curl -s -o /dev/null -w "%{http_code}
+" "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x<FULL_FINGERPRINT>"
    ```
 
 5. Add four repository secrets: `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` (from step 3),
@@ -65,6 +84,10 @@ and the Java SDK can keep being consumed from source.
 ## 4. Release
 
 Push this repository to GitHub (it must be public for the Go module proxy), then tag:
+
+Tag either the all-in-one `v*` or the per-registry tags, never both for the same version. Both
+match the Maven job, so two runs race for the same coordinate and one fails with "currently being
+published in another deployment" even though the other is succeeding.
 
 ```bash
 git tag v0.3.3 && git push origin v0.3.3          # everything

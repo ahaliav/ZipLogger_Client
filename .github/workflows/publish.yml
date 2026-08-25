@@ -24,6 +24,9 @@ jobs:
   npm:
     if: startsWith(github.ref_name, 'v') || startsWith(github.ref_name, 'npm-v')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # required by --provenance, which signs the package to this repo and commit
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
