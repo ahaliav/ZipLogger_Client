@@ -12,7 +12,7 @@ go get github.com/ahaliav/ZipLogger_Client/sdk_go
 
 ```go
 client, err := ziplogger.New(ziplogger.Options{
-    Endpoint: "https://logs.yourcompany.com",
+    Endpoint: "https://app.ziplogger.dev",
     APIKey:   "zk_...",
 })
 if err != nil { panic(err) }

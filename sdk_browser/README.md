@@ -14,7 +14,7 @@ npm install @ziplogger/browser
 import { ZipLoggerBrowser } from '@ziplogger/browser'
 
 export const ziplogger = new ZipLoggerBrowser({
-  endpoint: 'https://logs.yourcompany.com',
+  endpoint: 'https://app.ziplogger.dev',
   apiKey: 'zk_...',            // use a key dedicated to browser traffic
   release: import.meta.env.VITE_APP_VERSION,
 })

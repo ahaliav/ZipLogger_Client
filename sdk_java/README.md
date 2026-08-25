@@ -16,7 +16,7 @@ drop-on-backpressure, automatic enrichment. **Zero dependencies.**
 
 ```java
 var client = new ZipLoggerClient(new ZipLoggerClient.Options(
-    "https://logs.yourcompany.com", "zk_..."));
+    "https://app.ziplogger.dev", "zk_..."));
 
 client.log(new ZipLoggerClient.Entry()
     .message("order created")
