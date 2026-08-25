@@ -17,7 +17,7 @@ name: Publish SDKs
 
 on:
   push:
-    tags: ['v*', 'npm-v*', 'pypi-v*', 'maven-v*']
+    tags: ['v*', 'npm-v*', 'pypi-v*', 'maven-v*', 'sdk_go/v*']
   workflow_dispatch:
 
 jobs:
