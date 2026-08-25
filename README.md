@@ -69,6 +69,10 @@ The SDKs themselves live in this repository, so you can read exactly what runs i
 All packages are MIT licensed and share one version number (currently 0.3.3). Every package is
 dependency-free apart from the optional Pino and Winston peer packages in the Node SDK.
 
+The .NET and Go packages are live. The npm, PyPI, and Maven Central uploads are waiting on
+registry accounts, so until then install those three from source in this repository. See
+[PUBLISHING.md](PUBLISHING.md) for what is left and how a release is cut.
+
 ## Shared delivery semantics
 
 Every official SDK behaves the same way, so you can trust them in production:
