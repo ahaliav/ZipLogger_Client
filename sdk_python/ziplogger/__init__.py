@@ -6,7 +6,7 @@ Usage::
     from ziplogger import ZipLoggerHandler
 
     logging.getLogger().addHandler(ZipLoggerHandler(
-        endpoint="https://logs.yourcompany.com",
+        endpoint="https://app.ziplogger.dev",
         api_key="zk_...",
     ))
 """
@@ -14,4 +14,4 @@ Usage::
 from .handler import ZipLoggerHandler
 
 __all__ = ["ZipLoggerHandler"]
-__version__ = "0.1.0"
+__version__ = "0.3.3"

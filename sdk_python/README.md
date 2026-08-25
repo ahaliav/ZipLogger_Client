@@ -18,7 +18,7 @@ from ziplogger import ZipLoggerHandler
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger().addHandler(ZipLoggerHandler(
-    endpoint="https://logs.yourcompany.com",
+    endpoint="https://app.ziplogger.dev",
     api_key="zk_...",
     source="billing-worker",          # optional; defaults to the script name
 ))
