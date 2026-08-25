@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Northwind.Checkout</RootNamespace>
+    <AssemblyName>checkout</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Straight from NuGet, exactly as a customer would consume them. -->
+    <PackageReference Include="ZipLogger.Extensions.Logging" Version="0.3.3" />
+    <PackageReference Include="ZipLogger.Metrics.AspNetCore" Version="0.3.3" />
+  </ItemGroup>
+
+</Project>

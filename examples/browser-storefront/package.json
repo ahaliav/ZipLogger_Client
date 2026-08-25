@@ -1,0 +1,13 @@
+{
+  "name": "northwind-storefront",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ZipLogger demo: browser storefront using @ziplogger/browser",
+  "scripts": {
+    "vendor": "node -e \"require('fs').mkdirSync('vendor',{recursive:true});require('fs').copyFileSync(require.resolve('@ziplogger/browser'),'vendor/ziplogger-browser.js')\"",
+    "postinstall": "npm run vendor"
+  },
+  "dependencies": {
+    "@ziplogger/browser": "^0.3.3"
+  }
+}

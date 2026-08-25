@@ -1,0 +1,13 @@
+{
+  "name": "northwind-orders",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ZipLogger demo: Node.js orders service logging through Pino",
+  "main": "app.js",
+  "scripts": { "start": "node app.js" },
+  "dependencies": {
+    "pino": "^9.5.0",
+    "pino-abstract-transport": "^2.0.0",
+    "ziplogger": "^0.3.3"
+  }
+}

@@ -1,0 +1,85 @@
+# Northwind Coffee — six demo services, one per ZipLogger SDK.
+#
+# Each service installs its SDK from the public registry (NuGet, npm, PyPI, Maven
+# Central, the Go proxy), so what runs here is what a customer would get.
+#
+#   docker compose -f docker-compose.demo.yml up -d --build
+#
+# Only the storefront publishes a port; put a reverse proxy in front of it. The
+# checkout API is reachable at /checkout on the storefront's own origin, which is
+# what keeps the browser calls same-origin for trace propagation.
+name: northwind-demo
+
+x-ziplogger: &ziplogger
+  ZIPLOGGER_ENDPOINT: "${ZIPLOGGER_ENDPOINT:-https://app.ziplogger.dev}"
+  ZIPLOGGER_API_KEY: "${ZIPLOGGER_API_KEY:?set ZIPLOGGER_API_KEY in .env}"
+  ZIPLOGGER_ENVIRONMENT: "${ZIPLOGGER_ENVIRONMENT:-production}"
+
+services:
+  checkout:
+    build: ./dotnet-checkout
+    container_name: northwind-checkout
+    environment:
+      <<: *ziplogger
+    networks: [northwind]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  storefront:
+    build: ./browser-storefront
+    container_name: northwind-storefront
+    depends_on: [checkout]
+    environment:
+      ZIPLOGGER_ENDPOINT: "${ZIPLOGGER_ENDPOINT:-https://app.ziplogger.dev}"
+      # A separate key for browser traffic: it is visible to anyone who opens devtools.
+      ZIPLOGGER_BROWSER_API_KEY: "${ZIPLOGGER_BROWSER_API_KEY:?set ZIPLOGGER_BROWSER_API_KEY in .env}"
+      ZIPLOGGER_ENVIRONMENT: "${ZIPLOGGER_ENVIRONMENT:-production}"
+      CHECKOUT_API_BASE: "/checkout"
+    ports:
+      - "${STOREFRONT_HOST_PORT:-8095}:80"
+    networks: [northwind]
+    restart: unless-stopped
+
+  orders:
+    build: ./node-orders
+    container_name: northwind-orders
+    environment:
+      <<: *ziplogger
+      DEMO_INTERVAL_SECONDS: "${DEMO_INTERVAL_SECONDS:-5}"
+    networks: [northwind]
+    restart: unless-stopped
+
+  recommendations:
+    build: ./python-recommendations
+    container_name: northwind-recommendations
+    environment:
+      <<: *ziplogger
+      DEMO_INTERVAL_SECONDS: "${DEMO_INTERVAL_SECONDS:-4}"
+    networks: [northwind]
+    restart: unless-stopped
+
+  inventory:
+    build: ./go-inventory
+    container_name: northwind-inventory
+    environment:
+      <<: *ziplogger
+      DEMO_INTERVAL_SECONDS: "${DEMO_INTERVAL_SECONDS:-6}"
+    networks: [northwind]
+    restart: unless-stopped
+
+  payments:
+    build: ./java-payments
+    container_name: northwind-payments
+    environment:
+      <<: *ziplogger
+      DEMO_INTERVAL_SECONDS: "${DEMO_INTERVAL_SECONDS:-7}"
+    networks: [northwind]
+    restart: unless-stopped
+
+networks:
+  northwind:
+    name: northwind-demo-net

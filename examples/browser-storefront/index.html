@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northwind Coffee</title>
+<style>
+  :root {
+    --ink: #1c1917;
+    --muted: #78716c;
+    --line: #e7e5e4;
+    --paper: #fafaf9;
+    --accent: #7c2d12;
+    --accent-soft: #fef3c7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  header {
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    padding: 20px 24px;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  main { padding: 32px 24px 64px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .card h3 { margin: 0; font-size: 15px; }
+  .sku { color: var(--muted); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .price { font-weight: 600; }
+  button {
+    font: inherit;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 7px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  button.secondary { background: #fff; color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .panel {
+    margin-top: 32px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  input {
+    font: inherit;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    min-width: 160px;
+  }
+  .log {
+    margin-top: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    background: #1c1917;
+    color: #e7e5e4;
+    border-radius: 8px;
+    padding: 14px;
+    max-height: 260px;
+    overflow: auto;
+  }
+  .log div { white-space: pre-wrap; word-break: break-word; }
+  .log .err { color: #fca5a5; }
+  .log .ok { color: #86efac; }
+  .note {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Northwind Coffee</h1>
+    <p>Demo storefront. Every click here is logged from the browser to ZipLogger.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="catalog">
+    <div class="card"><h3>Loading catalog…</h3></div>
+  </div>
+
+  <section class="panel">
+    <div class="row">
+      <label for="promo">Promo code</label>
+      <input id="promo" value="WELCOME10" spellcheck="false">
+      <button class="secondary" id="use-broken-promo">Use the unconfigured code</button>
+      <button class="secondary" id="throw">Throw an uncaught error</button>
+    </div>
+    <div class="log" id="log"><div>Ready.</div></div>
+  </section>
+
+  <p class="note">
+    The storefront calls the .NET checkout API with an instrumented <code>fetch</code>, so the
+    browser event and the server log share one trace id. <code>WELCOME10</code> succeeds;
+    the seasonal code is missing from the server's discount table and produces a real 500.
+  </p>
+</main>
+
+<script src="./config.js"></script>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
