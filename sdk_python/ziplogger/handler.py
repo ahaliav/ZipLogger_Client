@@ -149,20 +149,29 @@ class ZipLoggerHandler(logging.Handler):
 
     def _pump(self) -> None:
         batch: List[dict] = []
+        # When the batch must go out, regardless of what arrives next. flush_interval is the
+        # maximum age of the oldest entry in a batch, not an idle timeout: re-arming the wait on
+        # every arrival meant a service logging steadily faster than the interval never went idle,
+        # so nothing shipped until the batch hit batch_size -- 100 seconds of held logs at one
+        # record a second.
+        deadline: Optional[float] = None
         while True:
-            timeout = self._flush_interval if batch else None
+            timeout = None if deadline is None else max(0.0, deadline - time.monotonic())
             try:
                 item = self._queue.get(timeout=timeout)
             except queue.Empty:
-                item = ...  # flush marker: linger elapsed with a partial batch
+                item = ...  # flush marker: the oldest entry reached flush_interval
             if item is None:  # close sentinel
                 self._send(batch)
                 return
             if item is not ...:
                 batch.append(item)
+                if deadline is None:  # first entry of a new batch starts the clock
+                    deadline = time.monotonic() + self._flush_interval
             if len(batch) >= self._batch_size or (item is ... and batch):
                 self._send(batch)
                 batch = []
+                deadline = None
 
     def _send(self, batch: List[dict]) -> None:
         if not batch:

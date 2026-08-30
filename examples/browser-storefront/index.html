@@ -91,13 +91,15 @@
     font-size: 14px;
   }
   code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+  .who { color: var(--muted); font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .card { cursor: pointer; }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <h1>Northwind Coffee</h1>
-    <p>Demo storefront. Every click here is logged from the browser to ZipLogger.</p>
+    <p>Demo storefront. Every click here is logged <em>and</em> tracked as a product event.</p>
   </div>
 </header>
 
@@ -108,6 +110,13 @@
 
   <section class="panel">
     <div class="row">
+      <label for="user-id">Account</label>
+      <input id="user-id" value="ada@northwind.test" spellcheck="false">
+      <button class="secondary" id="sign-in">Sign in</button>
+      <button class="secondary" id="sign-out">Sign out</button>
+      <span class="who" id="whoami">anonymous</span>
+    </div>
+    <div class="row" style="margin-top:12px">
       <label for="promo">Promo code</label>
       <input id="promo" value="WELCOME10" spellcheck="false">
       <button class="secondary" id="use-broken-promo">Use the unconfigured code</button>
@@ -120,6 +129,9 @@
     The storefront calls the .NET checkout API with an instrumented <code>fetch</code>, so the
     browser event and the server log share one trace id. <code>WELCOME10</code> succeeds;
     the seasonal code is missing from the server's discount table and produces a real 500.
+    Clicking a card, then buying, builds the funnel
+    <code>catalog_viewed → product_viewed → checkout_started → order_placed</code>, which is
+    what the sequential funnel widget reads.
   </p>
 </main>
 

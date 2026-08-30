@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <!-- Straight from NuGet, exactly as a customer would consume them. -->
-    <PackageReference Include="ZipLogger.Extensions.Logging" Version="0.3.3" />
-    <PackageReference Include="ZipLogger.Metrics.AspNetCore" Version="0.3.3" />
+    <PackageReference Include="ZipLogger.Extensions.Logging" Version="0.5.0" />
+    <PackageReference Include="ZipLogger.Metrics.AspNetCore" Version="0.5.0" />
   </ItemGroup>
 
 </Project>

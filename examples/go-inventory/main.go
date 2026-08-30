@@ -22,7 +22,7 @@ import (
 	"syscall"
 	"time"
 
-	ziplogger "github.com/ahaliav/ZipLogger_Client/sdk_go"
+	ziplogger "github.com/ziploggerhq/ZipLogger_Client/sdk_go"
 )
 
 type warehouse struct {

@@ -8,6 +8,6 @@
     "postinstall": "npm run vendor"
   },
   "dependencies": {
-    "@ziplogger/browser": "^0.3.3"
+    "@ziplogger/browser": "^0.4.0"
   }
 }

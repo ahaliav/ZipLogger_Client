@@ -9,12 +9,12 @@ what a customer gets.
 
 | Service | Language | SDK | What it demonstrates |
 |---|---|---|---|
-| [checkout](dotnet-checkout) | .NET 8 | `ZipLogger.Extensions.Logging`, `ZipLogger.Metrics.AspNetCore` | `ILogger` shipping unchanged, plus request duration, route, and status as metrics |
+| [checkout](dotnet-checkout) | .NET 8 | `ZipLogger.Extensions.Logging`, `ZipLogger.Metrics.AspNetCore` | `ILogger` shipping unchanged, request duration/route/status as metrics, and `IEventTracker` for server-authoritative revenue |
 | [orders](node-orders) | Node.js 22 | `ziplogger` via Pino transport | adopting ZipLogger without changing a single logging call |
 | [recommendations](python-recommendations) | Python 3.12 | `ziplogger` logging handler | `extra={...}` becoming searchable fields, `exc_info` becoming a stack trace |
 | [inventory](go-inventory) | Go 1.22 | `sdk_go` slog handler | `log/slog` as the interface, errors mapped to exception fields |
 | [payments](java-payments) | Java 17 | `dev.ziplogger:ziplogger` JUL handler | attaching to `java.util.logging` in one line |
-| [storefront](browser-storefront) | Browser | `@ziplogger/browser` | uncaught errors, failed fetches, and browser spans that share a trace id with the server |
+| [storefront](browser-storefront) | Browser | `@ziplogger/browser` | uncaught errors, failed fetches, browser spans sharing a trace id with the server, and `track()` / `identify()` product analytics |
 
 ## Every failure here is real
 
@@ -30,6 +30,23 @@ repository, so "which commit broke this?" resolves to an actual change.
 - **payments** converts a currency that was added to the storefront but not to the rate table
 - **checkout** applies a promo code that has no configured discount rate
 - **storefront** reads `.items` off a null cart, uncaught, the way front-end bugs really happen
+
+## Analytics, not just logs
+
+The storefront and the checkout API also demonstrate product events, which answer different
+questions than logs do. Browsing the storefront builds a real funnel:
+
+```
+catalog_viewed -> product_viewed -> checkout_started -> order_placed
+```
+
+Signing in calls `identify()`, so the anonymous browsing that preceded it belongs to the
+account rather than to a second person. The storefront passes its `identity` to the checkout
+API, which tracks `order_confirmed` against the same ids — revenue is recorded server-side
+because it is not something to take the client's word for.
+
+The four background services ship logs, traces and metrics only: `sdk_node`, `sdk_python`,
+`sdk_go` and `sdk_java` have no event API yet.
 
 Deploying this on a server behind a hostname, with a read-only login to share with
 clients, is covered in [DEPLOY.md](DEPLOY.md).

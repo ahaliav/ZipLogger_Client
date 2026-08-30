@@ -8,6 +8,6 @@
   "dependencies": {
     "pino": "^9.5.0",
     "pino-abstract-transport": "^2.0.0",
-    "ziplogger": "^0.3.3"
+    "ziplogger": "^0.4.0"
   }
 }

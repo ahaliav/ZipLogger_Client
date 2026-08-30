@@ -7,7 +7,9 @@
  *                          with their stack, without wrapping any of your code
  *   instrumentFetch()      adds a W3C traceparent to API calls, so a click in the
  *                          browser and the server log it caused share one trace id
- *   log()                  ordinary product events, with whatever fields you want
+ *   log()                  ordinary log lines, with whatever fields you want
+ *   track() / identify()   product analytics: what people did, and who they are, which
+ *                          ZipLogger answers different questions with than it does logs
  *
  * The API key here is visible to anyone who opens devtools. That is inherent to
  * browser telemetry, which is why this demo uses a key scoped to browser traffic
@@ -32,6 +34,22 @@ zl.instrumentFetch({ propagateTo: [API], logFailures: true, sendSpans: true })
 
 const logEl = document.getElementById('log')
 
+// The ids the browser is currently attributing events to. Passing them to the checkout API
+// lets the server track its own events against the same person, so a funnel spanning the
+// browser and the backend is one chain rather than two disconnected halves.
+function identity() {
+  const { userId, anonymousId, sessionId } = zl.identity
+  return { userId, anonymousId, sessionId }
+}
+
+function renderIdentity() {
+  const { userId, anonymousId } = zl.identity
+  document.getElementById('whoami').textContent = userId
+    ? `signed in as ${userId}`
+    : `anonymous (${(anonymousId || '').slice(0, 8)}…)`
+  document.getElementById('sign-out').disabled = !userId
+}
+
 function show(message, kind) {
   const line = document.createElement('div')
   if (kind) line.className = kind
@@ -47,6 +65,9 @@ async function loadCatalog() {
     const products = await response.json()
 
     zl.log({ severity: 'info', message: 'Catalog viewed', fields: { productCount: products.length } })
+    // Step 1 of the funnel. log() above is the line you read when something breaks; this is
+    // the thing the shopper did. They are deliberately separate calls.
+    zl.track('catalog_viewed', { productCount: products.length })
 
     grid.innerHTML = ''
     for (const product of products) {
@@ -56,6 +77,14 @@ async function loadCatalog() {
         <h3>${product.name}</h3>
         <span class="sku">${product.sku}</span>
         <span class="price">${product.price.toFixed(2)} EUR</span>`
+      // Step 2: looking at a product is its own step, so the funnel shows the drop-off
+      // between browsing and intending to buy.
+      card.addEventListener('click', (event) => {
+        if (event.target.tagName === 'BUTTON') return
+        zl.track('product_viewed', { sku: product.sku, name: product.name, price: product.price })
+        show(`Viewed ${product.name}`)
+      })
+
       const button = document.createElement('button')
       button.textContent = 'Buy one'
       button.addEventListener('click', () => checkout(product, 1))
@@ -80,12 +109,19 @@ async function checkout(product, quantity) {
     message: 'Checkout started',
     fields: { sku: product.sku, quantity, promoCode: promoCode || 'none' },
   })
+  // Step 3.
+  zl.track('checkout_started', {
+    sku: product.sku,
+    quantity,
+    promoCode: promoCode || 'none',
+    value: Number((product.price * quantity).toFixed(2)),
+  })
 
   try {
     const response = await fetch(`${API}/api/checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sku: product.sku, quantity, promoCode }),
+      body: JSON.stringify({ sku: product.sku, quantity, promoCode, ...identity() }),
     })
 
     if (!response.ok) {
@@ -95,6 +131,9 @@ async function checkout(product, quantity) {
         severity: 'error',
         message: 'Checkout rejected by the API',
         fields: { sku: product.sku, quantity, promoCode, status: response.status },
+      })
+      zl.track('checkout_failed', {
+        sku: product.sku, quantity, promoCode: promoCode || 'none', status: response.status,
       })
       show(`Checkout failed with ${response.status} (promo ${promoCode || 'none'})`, 'err')
       return
@@ -106,12 +145,35 @@ async function checkout(product, quantity) {
       message: 'Checkout completed',
       fields: { orderId: order.orderId, sku: order.sku, total: order.total },
     })
+    // Step 4. The server tracks its own order_placed against the same identity, so the two
+    // sides agree about who bought what rather than counting one purchase as two people.
+    zl.track('order_placed', {
+      orderId: order.orderId, sku: order.sku, quantity, value: order.total, currency: 'EUR',
+    })
     show(`Order ${order.orderId} placed for ${order.total.toFixed(2)} EUR`, 'ok')
   } catch (error) {
     zl.captureError(error, { stage: 'checkout', sku: product.sku })
     show(`Checkout error: ${error.message}`, 'err')
   }
 }
+
+document.getElementById('sign-in').addEventListener('click', () => {
+  const userId = document.getElementById('user-id').value.trim()
+  if (!userId) return
+  // identify() attaches everything this browser did anonymously to the account, so the
+  // pre-login catalog_viewed and the post-login order_placed are one person's funnel.
+  zl.identify(userId, { plan: 'retail' })
+  zl.track('signed_in', { method: 'demo' })
+  renderIdentity()
+  show(`Signed in as ${userId}; earlier anonymous events now belong to this account`, 'ok')
+})
+
+document.getElementById('sign-out').addEventListener('click', () => {
+  zl.track('signed_out')
+  zl.reset()
+  renderIdentity()
+  show('Signed out. A fresh anonymous identity starts here.')
+})
 
 document.getElementById('use-broken-promo').addEventListener('click', () => {
   document.getElementById('promo').value = 'SUMMER25'
@@ -129,4 +191,5 @@ document.getElementById('throw').addEventListener('click', () => {
 
 window.addEventListener('pagehide', () => zl.flush(true))
 
+renderIdentity()
 loadCatalog()

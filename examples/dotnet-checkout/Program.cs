@@ -3,16 +3,24 @@
 // A small ASP.NET Core service that the browser storefront calls. It shows the
 // two .NET packages together:
 //
-//   ZipLogger.Extensions.Logging   every ILogger<T> call ships to ZipLogger
+//   ZipLogger.Extensions.Logging   every ILogger<T> call ships to ZipLogger, and
+//                                  registers IEventTracker for product analytics
 //   ZipLogger.Metrics.AspNetCore   request duration, status, and route as metrics
 //
-// Nothing in the handlers below knows about ZipLogger. They log through ILogger
-// the way any ASP.NET Core service already does.
+// Nothing in the handlers below knows about ZipLogger for *logging*. They log through
+// ILogger the way any ASP.NET Core service already does.
+//
+// Events are different, and deliberately explicit: IEventTracker.Track() is called for
+// the things the business cares about. The browser tracks what the shopper did; the
+// server tracks what actually happened to the money, because revenue is not something
+// you take the client's word for. The two share an identity, so they describe one
+// person rather than two.
 //
 // The deliberate defect lives in ApplyPromotion: a promo code with an empty
 // discount table throws, which is a real exception from a real line.
 
 using System.Collections.Concurrent;
+using ZipLogger.Client;
 using ZipLogger.Extensions.Logging;
 using ZipLogger.Metrics.AspNetCore;
 
@@ -89,10 +97,17 @@ app.MapGet("/api/products", (ILogger<Program> log) =>
     return Results.Ok(catalog);
 });
 
-app.MapPost("/api/checkout", (CheckoutRequest request, ILogger<Program> log) =>
+app.MapPost("/api/checkout", (CheckoutRequest request, ILogger<Program> log, IEventTracker events) =>
 {
     var orderId = $"NW-{Random.Shared.Next(100000, 999999)}";
     var product = catalog.FirstOrDefault(p => p.Sku == request.Sku);
+
+    // The storefront sends the ids its browser SDK is using. Linking them here means the
+    // anonymous browsing that preceded a sign-in belongs to the account that signed in.
+    if (!string.IsNullOrEmpty(request.UserId) && !string.IsNullOrEmpty(request.AnonymousId))
+    {
+        events.Identify(request.UserId, request.AnonymousId);
+    }
 
     if (product is null)
     {
@@ -110,12 +125,36 @@ app.MapPost("/api/checkout", (CheckoutRequest request, ILogger<Program> log) =>
             "Checkout completed for order {OrderId}: {Quantity} x {Sku} at {Total:0.00} EUR (promo {PromoCode})",
             orderId, request.Quantity, request.Sku, total, request.PromoCode ?? "none");
 
+        // Server-authoritative revenue, attributed to the same person the browser is tracking.
+        events.Track("order_confirmed", new
+        {
+            orderId,
+            sku = request.Sku,
+            quantity = request.Quantity,
+            value = total,
+            currency = "EUR",
+            promoCode = request.PromoCode ?? "none",
+        }, userId: request.UserId, anonymousId: request.AnonymousId, sessionId: request.SessionId);
+
         return Results.Ok(new { orderId, sku = request.Sku, quantity = request.Quantity, total });
     }
     catch (KeyNotFoundException ex)
     {
         log.LogError(ex, "Checkout failed for order {OrderId}: promotion {PromoCode} is not configured",
             orderId, request.PromoCode);
+
+        // Tracked as well as logged: the log is for whoever debugs it, the event is so a
+        // funnel shows how much revenue the broken promo code actually cost.
+        events.Track("checkout_failed", new
+        {
+            orderId,
+            sku = request.Sku,
+            quantity = request.Quantity,
+            reason = "promotion_not_configured",
+            promoCode = request.PromoCode ?? "none",
+            value = subtotal,
+        }, userId: request.UserId, anonymousId: request.AnonymousId, sessionId: request.SessionId);
+
         return Results.Problem($"Promotion {request.PromoCode} is not configured", statusCode: 500);
     }
 });
@@ -126,4 +165,8 @@ app.Run();
 return 0;
 
 internal sealed record Product(string Sku, string Name, decimal Price);
-internal sealed record CheckoutRequest(string Sku, int Quantity, string? PromoCode);
+// UserId / AnonymousId / SessionId come from the browser SDK's `identity`, so server-side
+// events land on the same person as the browser's.
+internal sealed record CheckoutRequest(
+    string Sku, int Quantity, string? PromoCode,
+    string? UserId = null, string? AnonymousId = null, string? SessionId = null);
