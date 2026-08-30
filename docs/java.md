@@ -8,13 +8,13 @@ to your dependency tree and cannot conflict with your logging stack.
 <dependency>
   <groupId>dev.ziplogger</groupId>
   <artifactId>ziplogger</artifactId>
-  <version>0.3.3</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
 ```kotlin
 // Gradle
-implementation("dev.ziplogger:ziplogger:0.3.3")
+implementation("dev.ziplogger:ziplogger:0.4.0")
 ```
 
 ## Direct client

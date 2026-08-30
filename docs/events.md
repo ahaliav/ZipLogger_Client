@@ -12,7 +12,9 @@ Events appear in the app under **Events**, and every error pattern in **Search**
 
 ## Tracking from .NET
 
-`ZipLogger.Client` 0.4.0+ ships an event tracker on the same shipper that carries your logs.
+`ZipLogger.Client` 0.5.0+ ships an event tracker on the same shipper that carries your logs,
+and `ZipLogger.Extensions.Logging` 0.5.0+ registers it, so `IEventTracker` is injectable with
+no extra wiring.
 If you already use `ZipLogger.Extensions.Logging` or `ZipLogger.Serilog`, there is nothing new to
 configure — resolve `IEventTracker` and call it:
 
@@ -77,6 +79,20 @@ Every event defaults its `requestId` to `Activity.Current`'s trace id. In an ASP
 with tracing enabled that means an event, the request's logs, and its spans all carry the same id,
 so the Events UI deep-links to the trace waterfall and error correlation works with zero setup.
 Keep tracing on; you get the joins for free.
+
+## Tracking from the browser
+
+`@ziplogger/browser` 0.4.0+ has the same two calls:
+
+```js
+ziplogger.track('checkout_started', { cartValue: 214.9 })
+ziplogger.identify('user_42')      // after sign-in
+```
+
+The SDK holds the `anonymousId` for you — minted on first use and kept in `localStorage` — so
+`identify()` links a visitor's pre-login events without you passing an id around. That is the
+browser half of the identity flow described above; the .NET example reads the same id out of the
+`zl_anon` cookie when your server does the linking instead.
 
 ## HTTP API
 

@@ -1,5 +1,5 @@
 /**
- * ZipLogger browser SDK.
+ * ZipLogger browser SDK — logs, errors, traces and product-analytics events.
  *
  * Same delivery semantics as every ZipLogger SDK — bounded queue, NDJSON batches,
  * retry with backoff honoring 429 Retry-After, drop-on-backpressure, never throws —
@@ -29,6 +29,9 @@ export class ZipLoggerBrowser {
 
     const trimmed = String(options.endpoint).replace(/\/+$/, '')
     this._url = /\/logs$/i.test(trimmed) ? trimmed : trimmed + '/ingest/v1/logs'
+    // Events are a different endpoint with a different payload, so they get their own URL and
+    // queue rather than being squeezed through the log pipeline.
+    this._eventsUrl = trimmed.replace(/\/ingest\/v1\/logs$/i, '') + '/ingest/v1/events'
     this._apiKey = options.apiKey
     this._source = options.source || (HAS_WINDOW ? window.location.hostname : 'browser')
     this._release = options.release
@@ -48,6 +51,18 @@ export class ZipLoggerBrowser {
     this._timer = null
     this._sending = Promise.resolve()
     this._detach = []
+
+    this._events = []
+    this._eventTimer = null
+    this._eventSending = Promise.resolve()
+
+    // An event with neither a user id nor an anonymous id is rejected by the server, so a
+    // visitor who has not signed in needs a stable id of their own. It lives in localStorage so
+    // it survives reloads -- that is what lets identify() later attach their pre-login events to
+    // the account. Session id is per-tab and per-visit, so it belongs in sessionStorage.
+    this._userId = options.userId ?? null
+    this._anonymousId = options.anonymousId ?? this._persistedId('local', 'zl_anon', 'anon')
+    this._sessionId = options.sessionId ?? this._persistedId('session', 'zl_sess', 'sess')
 
     if (HAS_WINDOW) {
       const onHide = () => { void this.flush(true) }
@@ -101,6 +116,91 @@ export class ZipLoggerBrowser {
       error: error instanceof Error ? error : undefined,
       fields,
     })
+  }
+
+  /**
+   * Record a product-analytics event: a signup, a checkout, a plan change.
+   *
+   * Separate from `log()` on purpose. Logs are lines you read when something breaks; events are
+   * things people did, and they answer different questions in different places in ZipLogger.
+   * Never blocks, never throws.
+   *
+   * @param {string} name Event name, e.g. "checkout_started". Lower-cased server-side.
+   * @param {Record<string, unknown>} [properties] Your own properties. Values that look like
+   *   credentials are redacted server-side; do not send passwords, tokens or card numbers.
+   */
+  track(name, properties) {
+    if (!name || typeof name !== 'string') return
+    if (this._events.length >= this._queueCapacity) { this.dropped++; return }
+
+    const event = {
+      type: 'track',
+      name,
+      timestamp: new Date().toISOString(),
+      userId: this._userId ?? undefined,
+      anonymousId: this._anonymousId ?? undefined,
+      sessionId: this._sessionId ?? undefined,
+      environment: this._environment,
+      release: this._release,
+      commitSha: this._commitSha,
+      // An idempotency key, so a retry after a timeout cannot count the same event twice.
+      insertId: randomHex(12),
+      properties: properties && typeof properties === 'object' ? properties : undefined,
+    }
+    if (this._includePageContext && HAS_WINDOW) {
+      event.url = window.location.href
+      event.page = window.location.pathname
+    }
+
+    this._events.push(event)
+    this._scheduleEvents(this._events.length >= this._batchSize ? 0 : this._flushInterval)
+  }
+
+  /**
+   * Attach everything this browser has done anonymously to a real account, and use the account
+   * id from now on.
+   *
+   * Call it once after sign-in. The server links the two ids, so the events this visitor sent
+   * before signing in stop being a separate person -- which is the whole point of holding an
+   * anonymous id in the first place.
+   *
+   * @param {string} userId Your own id for the user.
+   * @param {Record<string, unknown>} [properties] Optional properties for the identify event.
+   */
+  identify(userId, properties) {
+    if (!userId || typeof userId !== 'string') return
+    const anonymousId = this._anonymousId
+
+    this._userId = userId
+    if (!anonymousId) return          // nothing to link; later events simply carry the user id
+
+    if (this._events.length >= this._queueCapacity) { this.dropped++; return }
+    this._events.push({
+      type: 'identify',
+      timestamp: new Date().toISOString(),
+      userId,
+      anonymousId,
+      sessionId: this._sessionId ?? undefined,
+      environment: this._environment,
+      insertId: randomHex(12),
+      properties: properties && typeof properties === 'object' ? properties : undefined,
+    })
+    // Linking is what every later event depends on, so it does not wait for a full batch.
+    this._scheduleEvents(0)
+  }
+
+  /** Forget the signed-in user, e.g. on sign-out. Later events are anonymous again. */
+  reset() {
+    this._userId = null
+    this._anonymousId = this._newId('anon')
+    this._sessionId = this._newId('sess')
+    this._store('local', 'zl_anon', this._anonymousId)
+    this._store('session', 'zl_sess', this._sessionId)
+  }
+
+  /** The ids this client is currently attributing events to. Useful in tests and debugging. */
+  get identity() {
+    return { userId: this._userId, anonymousId: this._anonymousId, sessionId: this._sessionId }
   }
 
   /**
@@ -257,6 +357,51 @@ export class ZipLoggerBrowser {
     return stop
   }
 
+  /** A stable id from web storage, minted on first use. Falls back to memory when storage is
+   *  unavailable (private mode, blocked cookies) -- attribution is then per-page, never an error. */
+  _persistedId(kind, key, prefix) {
+    const existing = this._read(kind, key)
+    if (existing) return existing
+    const id = this._newId(prefix)
+    this._store(kind, key, id)
+    return id
+  }
+
+  _newId(prefix) { return `${prefix}_${randomHex(10)}` }
+
+  _read(kind, key) {
+    try {
+      const store = kind === 'local' ? globalThis.localStorage : globalThis.sessionStorage
+      return store ? store.getItem(key) : null
+    } catch { return null }          // storage disabled: not an error worth surfacing
+  }
+
+  _store(kind, key, value) {
+    try {
+      const store = kind === 'local' ? globalThis.localStorage : globalThis.sessionStorage
+      if (store) store.setItem(key, value)
+    } catch { /* storage disabled; the id stays in memory for this page */ }
+  }
+
+  _scheduleEvents(delay) {
+    if (this._eventTimer !== null) {
+      if (delay > 0) return
+      clearTimeout(this._eventTimer)
+    }
+    this._eventTimer = setTimeout(() => {
+      this._eventTimer = null
+      this._eventSending = this._eventSending.then(() => this._drainEvents(false)).catch(() => {})
+    }, delay)
+    if (typeof this._eventTimer === 'object' && this._eventTimer.unref) this._eventTimer.unref()
+  }
+
+  async _drainEvents(keepalive) {
+    while (this._events.length > 0) {
+      const batch = this._events.splice(0, this._batchSize)
+      await this._post(this._eventsUrl, batch, batch.length, keepalive)
+    }
+  }
+
   _schedule(delay) {
     if (this._timer !== null) {
       if (delay > 0) return
@@ -277,12 +422,21 @@ export class ZipLoggerBrowser {
   }
 
   async _send(batch, keepalive) {
+    await this._post(this._url, batch, batch.length, keepalive)
+  }
+
+  /**
+   * One NDJSON POST with the retry policy both queues share: retry only what retrying can fix
+   * (429, 408, 5xx), honour Retry-After, and never retry during page unload -- an unloading page
+   * has no time, and a duplicate is worse than a loss when the event already carries an insertId.
+   */
+  async _post(url, batch, count, keepalive) {
     const payload = batch.map((e) => JSON.stringify(e)).join('\n')
 
     for (let attempt = 0; ; attempt++) {
       let retryAfterMs = null
       try {
-        const response = await fetch(this._url, {
+        const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-ndjson', 'X-Api-Key': this._apiKey },
           body: payload,
@@ -290,7 +444,7 @@ export class ZipLoggerBrowser {
         })
         if (response.ok) return
         if (response.status !== 429 && response.status !== 408 && response.status < 500) {
-          this.dropped += batch.length
+          this.dropped += count
           return
         }
         const header = response.headers.get('retry-after')
@@ -300,7 +454,7 @@ export class ZipLoggerBrowser {
       }
 
       if (keepalive || attempt >= this._maxRetries) {
-        this.dropped += batch.length // unloading pages don't get retries
+        this.dropped += count // unloading pages don't get retries
         return
       }
       await new Promise((resolve) => {
@@ -310,11 +464,13 @@ export class ZipLoggerBrowser {
     }
   }
 
-  /** Send anything still buffered. Pass keepalive=true during page unload. */
+  /** Send anything still buffered, logs and events both. Pass keepalive=true during page unload. */
   async flush(keepalive = false) {
     if (this._timer !== null) { clearTimeout(this._timer); this._timer = null }
+    if (this._eventTimer !== null) { clearTimeout(this._eventTimer); this._eventTimer = null }
     this._sending = this._sending.then(() => this._drain(keepalive)).catch(() => {})
-    await this._sending
+    this._eventSending = this._eventSending.then(() => this._drainEvents(keepalive)).catch(() => {})
+    await Promise.all([this._sending, this._eventSending])
   }
 
   /** Flush and detach all global listeners. */

@@ -45,6 +45,53 @@ closes.
 
 Call it once, as early as possible, so errors during startup are not missed.
 
+## Events
+
+Logs are what you read when something breaks. Events are what people did. ZipLogger answers
+different questions with each, so they are separate calls.
+
+```js
+ziplogger.track('checkout_started', { cartValue: 214.9, currency: 'USD' })
+```
+
+### Identity
+
+The server needs somebody to attribute an event to, so an un-identified visitor still gets an id.
+The SDK mints one on first use and keeps it in `localStorage` under `zl_anon`, alongside a per-tab
+session id in `sessionStorage` under `zl_sess`. Both fall back to memory when storage is blocked,
+so a private window degrades to per-page attribution rather than throwing.
+
+After sign-in, link the two:
+
+```js
+ziplogger.identify('user_42')
+```
+
+That is what stops one person being counted twice — once as the anonymous visitor who read your
+pricing page, once as the account that subscribed. Everything they did before signing in joins
+their profile. On sign-out, `ziplogger.reset()` starts a fresh anonymous identity so the next
+visitor on a shared machine is not attributed to the previous one.
+
+```js
+const { userId, anonymousId, sessionId } = ziplogger.identity   // useful when debugging
+```
+
+### Delivery
+
+Events use the same machinery as logs: a bounded queue, batches of 20, a 3-second linger, retry
+with backoff that honours `Retry-After`, and a `keepalive` flush on `pagehide` so a checkout event
+survives the navigation that follows it. They are queued separately from logs and posted to
+`/ingest/v1/events`, so a slow log batch never delays an event or the reverse.
+
+Each event carries an `insertId`, so if a request times out and retries, the event is recorded
+once rather than twice.
+
+### What not to send
+
+Property values that look like credentials — tokens, keys, card numbers — are redacted
+server-side, but the safe habit is not to send them. Event properties are visible to everyone on
+your team with access to the Events page.
+
 ## Frontend-to-backend tracing
 
 The single most useful call in this SDK, and the one people miss:

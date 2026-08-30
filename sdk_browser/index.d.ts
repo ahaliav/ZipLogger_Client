@@ -1,7 +1,8 @@
 export type Severity = 'debug' | 'info' | 'warn' | 'error' | 'fatal'
 
 export interface BrowserOptions {
-  /** Base URL of the ZipLogger server, e.g. "https://logs.yourcompany.com". */
+  /** Your ZipLogger origin, e.g. "https://app.ziplogger.dev" (or your own host if
+   *  you self-host). Paths are appended for you. */
   endpoint: string
   /** Tenant ingestion API key (zk_...). Use a key dedicated to browser traffic. */
   apiKey: string
@@ -12,8 +13,15 @@ export interface BrowserOptions {
   /** Default "production". */
   environment?: string
   tags?: string[]
-  /** Attach url + userAgent fields to every event. Default true. */
+  /** Attach url + userAgent to every log line, and url + page to every event. Default true. */
   includePageContext?: boolean
+  /** Your id for the signed-in user, when the page already knows it. Otherwise call identify(). */
+  userId?: string
+  /** Override the generated anonymous id. Normally left alone: it is minted once and kept in
+   *  localStorage so a visitor's pre-login events can be linked to their account later. */
+  anonymousId?: string
+  /** Override the generated session id (per tab, kept in sessionStorage). */
+  sessionId?: string
   /** Max buffered events. Default 1000. */
   queueCapacity?: number
   /** Max events per request. Default 20. */
@@ -38,16 +46,42 @@ export interface BrowserLogEntry {
   tags?: string[]
 }
 
+export interface Identity {
+  userId: string | null
+  anonymousId: string | null
+  sessionId: string | null
+}
+
 export declare class ZipLoggerBrowser {
   constructor(options: BrowserOptions)
-  /** Events lost to backpressure or exhausted retries. */
+  /** Records lost to backpressure or exhausted retries, logs and events together. */
   dropped: number
+  /** The ids events are currently attributed to. */
+  readonly identity: Identity
   /** Queue an event for background delivery. Never blocks, never throws. */
   log(entry: BrowserLogEntry): void
   /** Report a caught error with optional context fields. */
   captureError(error: unknown, fields?: Record<string, unknown>): void
   /** Capture window error / unhandledrejection events. Returns a stop function. */
   captureGlobalErrors(): () => void
+  /**
+   * Record a product-analytics event -- a signup, a checkout, a plan change.
+   *
+   * Distinct from log(): logs are lines you read when something breaks, events are things people
+   * did, and ZipLogger answers different questions with each. Never blocks, never throws.
+   *
+   * Values that look like credentials are redacted server-side; do not send passwords, tokens or
+   * card numbers as properties.
+   */
+  track(name: string, properties?: Record<string, unknown>): void
+  /**
+   * Attach this browser's anonymous history to a real account and use that id from now on.
+   * Call once after sign-in; the server links the ids so pre-login events stop being a separate
+   * person.
+   */
+  identify(userId: string, properties?: Record<string, unknown>): void
+  /** Forget the signed-in user and start a fresh anonymous identity, e.g. on sign-out. */
+  reset(): void
   /**
    * Wraps window.fetch: adds a W3C traceparent header to same-origin requests (plus any
    * origins in propagateTo) so browser calls and backend traces share one trace id, and
@@ -61,7 +95,7 @@ export declare class ZipLoggerBrowser {
     /** Service name for browser spans (default "<source>-browser"). */
     serviceName?: string
   }): () => void
-  /** Send anything still buffered. keepalive=true during page unload. */
+  /** Send anything still buffered, logs and events both. keepalive=true during page unload. */
   flush(keepalive?: boolean): Promise<void>
   /** Flush and detach global listeners. */
   close(): Promise<void>
@@ -85,4 +119,6 @@ export declare function createUseZipLogger(
 ): () => {
   captureError: (error: unknown, fields?: Record<string, unknown>) => void
   log: (entry: BrowserLogEntry) => void
+  track: (name: string, properties?: Record<string, unknown>) => void
+  identify: (userId: string, properties?: Record<string, unknown>) => void
 }

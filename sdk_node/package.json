@@ -1,6 +1,6 @@
 {
   "name": "ziplogger",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "ZipLogger Node.js SDK \u2014 core client plus Pino and Winston transports. Batching, retries, backpressure, automatic enrichment.",
   "license": "MIT",
   "main": "index.js",

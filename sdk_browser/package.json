@@ -1,7 +1,7 @@
 {
   "name": "@ziplogger/browser",
-  "version": "0.3.3",
-  "description": "ZipLogger browser SDK \u2014 capture console errors, unhandled rejections, and custom events from web apps, with a React error boundary. Zero dependencies.",
+  "version": "0.4.0",
+  "description": "ZipLogger browser SDK \u2014 product-analytics events, console errors, unhandled rejections and distributed tracing from web apps, with a React error boundary. Zero dependencies.",
   "license": "MIT",
   "type": "module",
   "main": "index.js",
@@ -22,10 +22,13 @@
   },
   "keywords": [
     "ziplogger",
+    "analytics",
+    "events",
     "logging",
     "browser",
     "react",
-    "error-tracking"
+    "error-tracking",
+    "opentelemetry"
   ],
   "repository": {
     "type": "git",

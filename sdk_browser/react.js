@@ -50,12 +50,14 @@ export function createErrorBoundary(React, client) {
   }
 }
 
-/** Convenience hook factory: returns a stable `captureError(error, fields)` callback. */
+/** Convenience hook factory: stable callbacks for logging, error capture and events. */
 export function createUseZipLogger(React, client) {
   return function useZipLogger() {
     return React.useMemo(() => ({
       captureError: (error, fields) => client.captureError(error, fields),
       log: (entry) => client.log(entry),
+      track: (name, properties) => client.track(name, properties),
+      identify: (userId, properties) => client.identify(userId, properties),
     }), [])
   }
 }
