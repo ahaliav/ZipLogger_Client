@@ -47,6 +47,8 @@ Your log is searchable within seconds.
 | Guide | What it covers |
 |---|---|
 | [Distributed tracing](docs/tracing.md) | OTLP/HTTP `/v1/traces`, span mapping, browser-to-backend traces, trace/log correlation |
+| [Product analytics (Events)](docs/events.md) | `Track()`/`Identify()`, sessions, the `/ingest/v1/events` endpoint, and error-to-journey correlation |
+| [Migrate from Mixpanel](docs/migrate-from-mixpanel.md) | Point an existing Mixpanel SDK at ZipLogger: endpoint, token, identity mapping, historical import |
 | [Request metrics (APM)](docs/metrics.md) | ASP.NET Core middleware, custom metrics, and the `/ingest/v1/metrics` endpoint for any stack |
 | [MCP server](docs/mcp.md) | Query your workspace from Claude Code, Cursor, or any MCP client |
 | [Alerts and webhooks](docs/alerts-webhooks.md) | Webhook payload contract and the sandboxed custom-script API |
