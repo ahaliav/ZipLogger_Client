@@ -16,7 +16,7 @@
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>https://github.com/ahaliav/ZipLogger_Client/blob/main/LICENSE</url>
+      <url>https://github.com/ziploggerhq/ZipLogger_Client/blob/main/LICENSE</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -30,9 +30,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:https://github.com/ahaliav/ZipLogger_Client.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/ahaliav/ZipLogger_Client.git</developerConnection>
-    <url>https://github.com/ahaliav/ZipLogger_Client</url>
+    <connection>scm:git:https://github.com/ziploggerhq/ZipLogger_Client.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/ziploggerhq/ZipLogger_Client.git</developerConnection>
+    <url>https://github.com/ziploggerhq/ZipLogger_Client</url>
   </scm>
 
   <properties>

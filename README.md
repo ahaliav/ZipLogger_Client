@@ -64,7 +64,7 @@ The SDKs themselves live in this repository, so you can read exactly what runs i
 | Python | [`sdk_python/`](sdk_python) | `pip install ziplogger` |
 | Node.js | [`sdk_node/`](sdk_node) | `npm install ziplogger` |
 | Browser / React | [`sdk_browser/`](sdk_browser) | `npm install @ziplogger/browser` |
-| Go | [`sdk_go/`](sdk_go) | `go get github.com/ahaliav/ZipLogger_Client/sdk_go` |
+| Go | [`sdk_go/`](sdk_go) | `go get github.com/ziploggerhq/ZipLogger_Client/sdk_go` |
 | Java | [`sdk_java/`](sdk_java) | `dev.ziplogger:ziplogger` (Maven Central) |
 | .NET | published from the platform repo | `dotnet add package ZipLogger.Extensions.Logging` |
 

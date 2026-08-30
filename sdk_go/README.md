@@ -5,7 +5,7 @@ with a first-class `log/slog` handler. Batching, retry with backoff (429-aware),
 drop-on-backpressure, automatic enrichment. Go ≥ 1.21.
 
 ```bash
-go get github.com/ahaliav/ZipLogger_Client/sdk_go
+go get github.com/ziploggerhq/ZipLogger_Client/sdk_go
 ```
 
 ## slog (recommended)

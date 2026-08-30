@@ -12,7 +12,7 @@ already set up, so future releases are a tag and nothing else.
 | npm | `ziplogger`, `@ziplogger/browser` | create npm account + `ziplogger` org, add `NPM_TOKEN` secret | automatic on tag |
 | PyPI | `ziplogger` | create PyPI account, add a Trusted Publisher | automatic on tag, no token stored |
 | Maven Central | `dev.ziplogger:ziplogger` | Central account, verify `ziplogger.dev` by DNS, GPG key, 4 secrets | automatic on tag |
-| Go module proxy | `github.com/ahaliav/ZipLogger_Client/sdk_go` | none, the proxy reads this public repo | tag only |
+| Go module proxy | `github.com/ziploggerhq/ZipLogger_Client/sdk_go` | none, the proxy reads this public repo | tag only |
 | NuGet | `ZipLogger.*` | already done | tag in the platform repo |
 
 ## 1. npm (fastest, about 5 minutes)
@@ -34,7 +34,7 @@ already set up, so future releases are a tag and nothing else.
 1. Create an account at <https://pypi.org/account/register/> and enable 2FA.
 2. Go to <https://pypi.org/manage/account/publishing/> and add a **pending trusted publisher**:
    - PyPI project name: `ziplogger`
-   - Owner: `ahaliav`
+   - Owner: `ziploggerhq`
    - Repository: `ZipLogger_Client`
    - Workflow: `publish.yml`
    - Environment: `pypi`
@@ -111,7 +111,7 @@ versions will not resolve.
 ```bash
 pip download ziplogger==0.3.3 -d /tmp/zl --no-deps
 npm view ziplogger version && npm view @ziplogger/browser version
-GOPROXY=proxy.golang.org go list -m github.com/ahaliav/ZipLogger_Client/sdk_go@v0.3.3
+GOPROXY=proxy.golang.org go list -m github.com/ziploggerhq/ZipLogger_Client/sdk_go@v0.3.3
 curl -s https://repo1.maven.org/maven2/dev/ziplogger/ziplogger/0.3.3/ | head
 ```
 

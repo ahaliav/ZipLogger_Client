@@ -1,3 +1,3 @@
-module github.com/ahaliav/ZipLogger_Client/sdk_go
+module github.com/ziploggerhq/ZipLogger_Client/sdk_go
 
 go 1.21

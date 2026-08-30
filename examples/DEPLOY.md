@@ -35,7 +35,7 @@ makes a shared demo login safe to send out.
 On the server:
 
 ```bash
-git clone https://github.com/ahaliav/ZipLogger_Client.git
+git clone https://github.com/ziploggerhq/ZipLogger_Client.git
 cd ZipLogger_Client/examples
 cp .env.example .env
 ```

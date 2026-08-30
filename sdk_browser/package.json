@@ -29,12 +29,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahaliav/ZipLogger_Client.git",
+    "url": "git+https://github.com/ziploggerhq/ZipLogger_Client.git",
     "directory": "sdk_browser"
   },
   "homepage": "https://ziplogger.dev",
   "bugs": {
-    "url": "https://github.com/ahaliav/ZipLogger_Client/issues"
+    "url": "https://github.com/ziploggerhq/ZipLogger_Client/issues"
   },
   "author": "Ahaliav Fox",
   "files": [

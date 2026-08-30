@@ -21,9 +21,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://ziplogger.dev"
-Documentation = "https://github.com/ahaliav/ZipLogger_Client/blob/main/docs/python.md"
-Source = "https://github.com/ahaliav/ZipLogger_Client"
-Issues = "https://github.com/ahaliav/ZipLogger_Client/issues"
+Documentation = "https://github.com/ziploggerhq/ZipLogger_Client/blob/main/docs/python.md"
+Source = "https://github.com/ziploggerhq/ZipLogger_Client"
+Issues = "https://github.com/ziploggerhq/ZipLogger_Client/issues"
 
 [tool.setuptools.packages.find]
 include = ["ziplogger*"]
