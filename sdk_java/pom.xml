@@ -11,7 +11,7 @@
 
   <name>ziplogger</name>
   <description>ZipLogger Java SDK: JDK-only client with a java.util.logging handler. Batching, retries, backpressure, automatic enrichment.</description>
-  <url>https://ziplogger.dev</url>
+  <url>https://ziplogger.ai</url>
 
   <licenses>
     <license>

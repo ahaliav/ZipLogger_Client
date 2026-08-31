@@ -15,7 +15,7 @@
 
 const pino = require('pino')
 
-const ENDPOINT = process.env.ZIPLOGGER_ENDPOINT || 'https://app.ziplogger.dev'
+const ENDPOINT = process.env.ZIPLOGGER_ENDPOINT || 'https://app.ziplogger.ai'
 const API_KEY = process.env.ZIPLOGGER_API_KEY || ''
 const INTERVAL = Number(process.env.DEMO_INTERVAL_SECONDS || 5) * 1000
 

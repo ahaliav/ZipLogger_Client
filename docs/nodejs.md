@@ -17,7 +17,7 @@ const pino = require('pino')
 
 const logger = pino(pino.transport({
   target: 'ziplogger/pino',
-  options: { endpoint: 'https://app.ziplogger.dev', apiKey: 'zk_...' },
+  options: { endpoint: 'https://app.ziplogger.ai', apiKey: 'zk_...' },
 }))
 
 logger.info({ orderId: 83112, customer: 'acme' }, 'Order created')
@@ -34,7 +34,7 @@ const logger = pino(pino.transport({
   targets: [
     { target: 'pino-pretty', options: { colorize: true } },
     { target: 'ziplogger/pino', level: 'info',
-      options: { endpoint: 'https://app.ziplogger.dev', apiKey: process.env.ZIPLOGGER_API_KEY } },
+      options: { endpoint: 'https://app.ziplogger.ai', apiKey: process.env.ZIPLOGGER_API_KEY } },
   ],
 }))
 ```
@@ -55,7 +55,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new ZipLoggerTransport({
-      endpoint: 'https://app.ziplogger.dev',
+      endpoint: 'https://app.ziplogger.ai',
       apiKey: process.env.ZIPLOGGER_API_KEY,
       source: 'orders-api',
       level: 'info',           // standard winston transport option
@@ -82,7 +82,7 @@ const logger = winston.createLogger({
 ```js
 const { ZipLoggerClient } = require('ziplogger')
 
-const zl = new ZipLoggerClient({ endpoint: 'https://app.ziplogger.dev', apiKey: 'zk_...' })
+const zl = new ZipLoggerClient({ endpoint: 'https://app.ziplogger.ai', apiKey: 'zk_...' })
 zl.log({ severity: 'info', message: 'job finished', fields: { jobId: 42 } })
 zl.log({ severity: 'error', message: 'job failed', error: err })
 await zl.close()   // flush on shutdown
@@ -94,7 +94,7 @@ From ESM or TypeScript:
 import { ZipLoggerClient, type LogEntry } from 'ziplogger'
 
 const zl = new ZipLoggerClient({
-  endpoint: 'https://app.ziplogger.dev',
+  endpoint: 'https://app.ziplogger.ai',
   apiKey: process.env.ZIPLOGGER_API_KEY!,
 })
 ```
@@ -127,7 +127,7 @@ const fastify = require('fastify')({
   logger: {
     transport: {
       target: 'ziplogger/pino',
-      options: { endpoint: 'https://app.ziplogger.dev', apiKey: process.env.ZIPLOGGER_API_KEY },
+      options: { endpoint: 'https://app.ziplogger.ai', apiKey: process.env.ZIPLOGGER_API_KEY },
     },
   },
 })
@@ -143,7 +143,7 @@ LoggerModule.forRoot({
   pinoHttp: {
     transport: {
       target: 'ziplogger/pino',
-      options: { endpoint: 'https://app.ziplogger.dev', apiKey: process.env.ZIPLOGGER_API_KEY },
+      options: { endpoint: 'https://app.ziplogger.ai', apiKey: process.env.ZIPLOGGER_API_KEY },
     },
   },
 })
@@ -265,7 +265,7 @@ Use OpenTelemetry auto-instrumentation and point the OTLP exporter at ZipLogger:
 ```bash
 npm install @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node \
             @opentelemetry/exporter-trace-otlp-proto
-OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.dev \
+OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.ai \
 OTEL_EXPORTER_OTLP_HEADERS=X-Api-Key=zk_... \
 OTEL_SERVICE_NAME=orders-api \
   node --require @opentelemetry/auto-instrumentations-node/register app.js

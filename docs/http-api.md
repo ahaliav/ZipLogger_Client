@@ -9,7 +9,7 @@ device, or a shipper you configure by hand.
 ## Endpoint
 
 ```
-POST https://app.ziplogger.dev/ingest/v1/logs
+POST https://app.ziplogger.ai/ingest/v1/logs
 X-Api-Key: zk_...
 Content-Type: application/json      (or application/x-ndjson)
 ```
@@ -18,7 +18,7 @@ Accepts a **single object**, a **JSON array**, or **NDJSON** (one JSON object pe
 what the official SDKs send).
 
 ```bash
-curl -X POST https://app.ziplogger.dev/ingest/v1/logs \
+curl -X POST https://app.ziplogger.ai/ingest/v1/logs \
   -H "X-Api-Key: zk_..." \
   -H "Content-Type: application/json" \
   -d '{"message":"hello","severity":"info","source":"cron-job"}'
@@ -27,7 +27,7 @@ curl -X POST https://app.ziplogger.dev/ingest/v1/logs \
 A batch as an array:
 
 ```bash
-curl -X POST https://app.ziplogger.dev/ingest/v1/logs \
+curl -X POST https://app.ziplogger.ai/ingest/v1/logs \
   -H "X-Api-Key: zk_..." -H "Content-Type: application/json" \
   -d '[{"message":"first","severity":"info"},{"message":"second","severity":"warn"}]'
 ```
@@ -38,7 +38,7 @@ The same batch as NDJSON:
 printf '%s\n' \
   '{"message":"first","severity":"info"}' \
   '{"message":"second","severity":"warn"}' \
-| curl -X POST https://app.ziplogger.dev/ingest/v1/logs \
+| curl -X POST https://app.ziplogger.ai/ingest/v1/logs \
     -H "X-Api-Key: zk_..." -H "Content-Type: application/x-ndjson" --data-binary @-
 ```
 
@@ -151,7 +151,7 @@ To read data back out, see the [query API](query-api.md).
 Each plan includes a daily and a monthly log quota, and spans count toward the same quota. `429`
 responses carry a `Retry-After` header pointing at the next UTC midnight. Official SDKs honor it
 automatically, so your application is never blocked by an exhausted quota. See
-[pricing](https://ziplogger.dev/pricing.html) for plan limits.
+[pricing](https://ziplogger.ai/pricing.html) for plan limits.
 
 ## Troubleshooting
 

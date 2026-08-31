@@ -1,6 +1,6 @@
 # ziplogger (Node.js)
 
-Node.js SDK for [ZipLogger](https://ziplogger.dev) — a zero-dependency core client
+Node.js SDK for [ZipLogger](https://ziplogger.ai) — a zero-dependency core client
 plus **Pino** and **Winston** transports. Batching, retry with backoff (429-aware),
 drop-on-backpressure, automatic enrichment. Node ≥ 18.
 
@@ -15,7 +15,7 @@ const pino = require('pino')
 
 const logger = pino(pino.transport({
   target: 'ziplogger/pino',
-  options: { endpoint: 'https://app.ziplogger.dev', apiKey: 'zk_...' },
+  options: { endpoint: 'https://app.ziplogger.ai', apiKey: 'zk_...' },
 }))
 
 logger.info({ orderId: 83112, customer: 'acme' }, 'Order created')
@@ -32,7 +32,7 @@ const { ZipLoggerTransport } = require('ziplogger/winston')
 
 const logger = winston.createLogger({
   transports: [
-    new ZipLoggerTransport({ endpoint: 'https://app.ziplogger.dev', apiKey: 'zk_...' }),
+    new ZipLoggerTransport({ endpoint: 'https://app.ziplogger.ai', apiKey: 'zk_...' }),
   ],
 })
 
@@ -44,7 +44,7 @@ logger.info('Order created', { orderId: 83112 })
 ```js
 const { ZipLoggerClient } = require('ziplogger')
 
-const zl = new ZipLoggerClient({ endpoint: 'https://app.ziplogger.dev', apiKey: 'zk_...' })
+const zl = new ZipLoggerClient({ endpoint: 'https://app.ziplogger.ai', apiKey: 'zk_...' })
 zl.log({ severity: 'info', message: 'job finished', fields: { jobId: 42 } })
 zl.log({ severity: 'error', message: 'job failed', error: err })
 await zl.close()   // flush on shutdown

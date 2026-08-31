@@ -17,7 +17,7 @@ Two credential types, used for different things:
 | JWT | Everything else: search, traces, metrics, dashboards, billing | `Authorization: Bearer <token>` |
 
 ```bash
-curl -X POST https://app.ziplogger.dev/api/v1/auth/login \
+curl -X POST https://app.ziplogger.ai/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"you@company.com","password":"..."}'
 ```
@@ -34,7 +34,7 @@ curl -X POST https://app.ziplogger.dev/api/v1/auth/login \
 Access tokens are short-lived. Exchange the refresh token when one expires:
 
 ```bash
-curl -X POST https://app.ziplogger.dev/api/v1/auth/refresh \
+curl -X POST https://app.ziplogger.ai/api/v1/auth/refresh \
   -H "Content-Type: application/json" -d '{"refreshToken":"..."}'
 ```
 
@@ -77,7 +77,7 @@ a live index gets slower and less accurate the further you go.
 # Page through an entire day
 AFTER=""
 while : ; do
-  RESP=$(curl -sG https://app.ziplogger.dev/api/v1/logs/search \
+  RESP=$(curl -sG https://app.ziplogger.ai/api/v1/logs/search \
     -H "Authorization: Bearer $JWT" \
     --data-urlencode "severity=error" \
     --data-urlencode "from=2026-08-24T00:00:00Z" \
@@ -175,11 +175,11 @@ same JWT convention. They back the app's own pages, so the shapes track the UI.
 # Fail a deploy if the new release logged errors in its first 10 minutes.
 set -euo pipefail
 
-JWT=$(curl -s -X POST https://app.ziplogger.dev/api/v1/auth/login \
+JWT=$(curl -s -X POST https://app.ziplogger.ai/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d "{\"email\":\"$ZL_EMAIL\",\"password\":\"$ZL_PASSWORD\"}" | jq -r .accessToken)
 
-ERRORS=$(curl -sG https://app.ziplogger.dev/api/v1/logs/search \
+ERRORS=$(curl -sG https://app.ziplogger.ai/api/v1/logs/search \
   -H "Authorization: Bearer $JWT" \
   --data-urlencode "release=$GITHUB_REF_NAME" \
   --data-urlencode "severity=error" \
@@ -195,7 +195,7 @@ This works because the SDKs stamp `release` on every entry automatically. See th
 ## Limits
 
 - API requests are metered per day per plan (5,000 on Free, rising with the plan). See
-  [pricing](https://ziplogger.dev/pricing.html).
+  [pricing](https://ziplogger.ai/pricing.html).
 - Everything is scoped to the workspace in the token. There is no cross-workspace query.
 - Search covers your plan's retention window. Older data is gone, not merely hidden.
 - Reads consume API requests, not log quota.

@@ -14,7 +14,7 @@ npm install @ziplogger/browser
 import { ZipLoggerBrowser } from '@ziplogger/browser'
 
 export const ziplogger = new ZipLoggerBrowser({
-  endpoint: 'https://app.ziplogger.dev',
+  endpoint: 'https://app.ziplogger.ai',
   apiKey: 'zk_...',            // use a key dedicated to browser traffic
   source: 'storefront',
   release: import.meta.env.VITE_APP_VERSION,
@@ -234,7 +234,7 @@ across both:
 
 ```js
 new ZipLoggerBrowser({
-  endpoint: 'https://app.ziplogger.dev',
+  endpoint: 'https://app.ziplogger.ai',
   apiKey: import.meta.env.VITE_ZIPLOGGER_KEY,
   release: import.meta.env.VITE_APP_VERSION,     // e.g. from package.json or the git tag
   commitSha: import.meta.env.VITE_COMMIT_SHA,    // enables regression attribution
@@ -250,7 +250,7 @@ code that produced it.
 If you serve a CSP, the browser must be allowed to reach ZipLogger:
 
 ```
-Content-Security-Policy: connect-src 'self' https://app.ziplogger.dev;
+Content-Security-Policy: connect-src 'self' https://app.ziplogger.ai;
 ```
 
 Without it, the browser blocks every flush and the console fills with CSP violations rather than
@@ -300,7 +300,7 @@ ziplogger.captureError(err)
 
 | Symptom | Check |
 |---|---|
-| Nothing arrives, CSP errors in console | Add `connect-src https://app.ziplogger.dev`. |
+| Nothing arrives, CSP errors in console | Add `connect-src https://app.ziplogger.ai`. |
 | Nothing arrives on tab close | `flush()` runs on `pagehide`. Some mobile browsers kill tabs without firing it, so a short `flushIntervalMs` loses less. |
 | Cross-origin fetches break after `instrumentFetch` | The target server must allow the `traceparent` header in CORS. Remove the origin from `propagateTo` until it does. |
 | Traces show only backend spans | `sendSpans` is false, or the browser span was rejected. Check the network tab for the `/v1/traces` call. |

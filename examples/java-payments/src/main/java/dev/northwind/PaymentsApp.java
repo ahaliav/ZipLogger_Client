@@ -84,7 +84,7 @@ public final class PaymentsApp {
     }
 
     public static void main(String[] args) throws Exception {
-        String endpoint = envOr("ZIPLOGGER_ENDPOINT", "https://app.ziplogger.dev");
+        String endpoint = envOr("ZIPLOGGER_ENDPOINT", "https://app.ziplogger.ai");
         String apiKey = System.getenv("ZIPLOGGER_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
             System.err.println("ZIPLOGGER_API_KEY is required");

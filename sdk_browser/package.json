@@ -35,7 +35,7 @@
     "url": "git+https://github.com/ziploggerhq/ZipLogger_Client.git",
     "directory": "sdk_browser"
   },
-  "homepage": "https://ziplogger.dev",
+  "homepage": "https://ziplogger.ai",
   "bugs": {
     "url": "https://github.com/ziploggerhq/ZipLogger_Client/issues"
   },

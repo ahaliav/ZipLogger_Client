@@ -11,7 +11,7 @@
 name: northwind-demo
 
 x-ziplogger: &ziplogger
-  ZIPLOGGER_ENDPOINT: "${ZIPLOGGER_ENDPOINT:-https://app.ziplogger.dev}"
+  ZIPLOGGER_ENDPOINT: "${ZIPLOGGER_ENDPOINT:-https://app.ziplogger.ai}"
   ZIPLOGGER_API_KEY: "${ZIPLOGGER_API_KEY:?set ZIPLOGGER_API_KEY in .env}"
   ZIPLOGGER_ENVIRONMENT: "${ZIPLOGGER_ENVIRONMENT:-production}"
 
@@ -34,7 +34,7 @@ services:
     container_name: northwind-storefront
     depends_on: [checkout]
     environment:
-      ZIPLOGGER_ENDPOINT: "${ZIPLOGGER_ENDPOINT:-https://app.ziplogger.dev}"
+      ZIPLOGGER_ENDPOINT: "${ZIPLOGGER_ENDPOINT:-https://app.ziplogger.ai}"
       # A separate key for browser traffic: it is visible to anyone who opens devtools.
       ZIPLOGGER_BROWSER_API_KEY: "${ZIPLOGGER_BROWSER_API_KEY:?set ZIPLOGGER_BROWSER_API_KEY in .env}"
       ZIPLOGGER_ENVIRONMENT: "${ZIPLOGGER_ENVIRONMENT:-production}"

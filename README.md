@@ -1,6 +1,6 @@
 # ZipLogger client documentation
 
-[ZipLogger](https://ziplogger.dev) is log management that finds the commit that broke production:
+[ZipLogger](https://ziplogger.ai) is log management that finds the commit that broke production:
 search, dashboards, alerts, log-pattern clustering, distributed tracing, request metrics, AI
 analysis, and git regression attribution.
 
@@ -8,17 +8,17 @@ This repository is the public integration documentation: how to send telemetry t
 any language, framework, or shipper, and how to read it back out. Every integration converges into
 the same pipeline, so all features work identically regardless of transport.
 
-ZipLogger is a hosted service. Your workspace lives at `https://app.ziplogger.dev` and your apps
+ZipLogger is a hosted service. Your workspace lives at `https://app.ziplogger.ai` and your apps
 only need outbound HTTPS to reach it. There is nothing to install or operate.
 
 ## Quick start
 
-1. [Create a free account](https://ziplogger.dev/signup.html) (1,000 logs/day, free forever).
+1. [Create a free account](https://ziplogger.ai/signup.html) (1,000 logs/day, free forever).
 2. In the app, create an ingestion key under **Settings → API keys** (`zk_...`).
 3. Send your first log:
 
 ```bash
-curl -X POST https://app.ziplogger.dev/ingest/v1/logs \
+curl -X POST https://app.ziplogger.ai/ingest/v1/logs \
   -H "X-Api-Key: zk_..." \
   -H "Content-Type: application/json" \
   -d '{"message":"hello from curl","severity":"info","source":"quickstart"}'
@@ -98,11 +98,11 @@ See the [configuration reference](docs/configuration.md) for the exact option na
 Each plan includes a daily and a monthly log quota, and spans count toward the same quota as logs.
 When a quota is exhausted, ingestion answers `429` with a `Retry-After` header pointing at the next
 UTC midnight, plus a JSON body showing current usage. SDKs honor it automatically and your
-application is never blocked. See [pricing](https://ziplogger.dev/pricing.html) for plan limits and
+application is never blocked. See [pricing](https://ziplogger.ai/pricing.html) for plan limits and
 [the HTTP API reference](docs/http-api.md#responses) for the response body.
 
 ## Support
 
-- Documentation site: [ziplogger.dev/docs.html](https://ziplogger.dev/docs.html)
-- Support: [support@ziplogger.dev](mailto:support@ziplogger.dev)
-- Sales and partnerships: [contact@ziplogger.dev](mailto:contact@ziplogger.dev)
+- Documentation site: [ziplogger.ai/docs.html](https://ziplogger.ai/docs.html)
+- Support: [support@ziplogger.ai](mailto:support@ziplogger.ai)
+- Sales and partnerships: [contact@ziplogger.ai](mailto:contact@ziplogger.ai)

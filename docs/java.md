@@ -21,7 +21,7 @@ implementation("dev.ziplogger:ziplogger:0.4.0")
 
 ```java
 var client = new ZipLoggerClient(new ZipLoggerClient.Options(
-    "https://app.ziplogger.dev", System.getenv("ZIPLOGGER_API_KEY")));
+    "https://app.ziplogger.ai", System.getenv("ZIPLOGGER_API_KEY")));
 
 client.log(new ZipLoggerClient.Entry()
     .message("order created")
@@ -40,7 +40,7 @@ when you need them.
 Configure enrichment and delivery on `Options` before constructing the client:
 
 ```java
-var options = new ZipLoggerClient.Options("https://app.ziplogger.dev", apiKey);
+var options = new ZipLoggerClient.Options("https://app.ziplogger.ai", apiKey);
 options.source = "orders-api";
 options.release = "2026.8.1";
 options.tags = List.of("payments");
@@ -132,7 +132,7 @@ public final class ZipLoggerAppender extends AppenderBase<ILoggingEvent> {
 
 ```xml
 <appender name="ZIPLOGGER" class="com.yourco.logging.ZipLoggerAppender">
-  <endpoint>https://app.ziplogger.dev</endpoint>
+  <endpoint>https://app.ziplogger.ai</endpoint>
   <apiKey>${ZIPLOGGER_API_KEY}</apiKey>
   <source>orders-api</source>
 </appender>
@@ -242,7 +242,7 @@ Use the OpenTelemetry Java agent, which needs no code change, and point it at Zi
 
 ```bash
 java -javaagent:opentelemetry-javaagent.jar \
-     -Dotel.exporter.otlp.endpoint=https://app.ziplogger.dev \
+     -Dotel.exporter.otlp.endpoint=https://app.ziplogger.ai \
      -Dotel.exporter.otlp.headers=X-Api-Key=zk_... \
      -Dotel.service.name=orders-api \
      -jar app.jar

@@ -12,7 +12,7 @@ logs, traces and deployments, an error can tell you what users were doing when i
 
 ## 1. Create a ZipLogger workspace
 
-Sign up at [ziplogger.dev](https://ziplogger.dev). The free plan includes event ingestion; no
+Sign up at [ziplogger.ai](https://ziplogger.ai). The free plan includes event ingestion; no
 card is charged.
 
 ## 2. Get an ingestion key
@@ -26,13 +26,13 @@ safe in a browser bundle. It cannot read your data.
 ## 3. Point your SDK at ZipLogger
 
 Every Mixpanel client library lets you override the API host. Set the host to
-`https://app.ziplogger.dev/ingest/v1/mp` and use your ZipLogger key as the token.
+`https://app.ziplogger.ai/ingest/v1/mp` and use your ZipLogger key as the token.
 
 **JavaScript (mixpanel-browser)**
 
 ```js
 mixpanel.init('zk_your_ziplogger_key', {
-  api_host: 'https://app.ziplogger.dev/ingest/v1/mp',
+  api_host: 'https://app.ziplogger.ai/ingest/v1/mp',
 })
 ```
 
@@ -43,12 +43,12 @@ from mixpanel import Mixpanel, Consumer
 
 mp = Mixpanel(
     'zk_your_ziplogger_key',
-    consumer=Consumer(api_host='app.ziplogger.dev/ingest/v1/mp'),
+    consumer=Consumer(api_host='app.ziplogger.ai/ingest/v1/mp'),
 )
 ```
 
 **Anything else** — point `/track`, `/import` and `/engage` at
-`https://app.ziplogger.dev/ingest/v1/mp/...`. You can send the key in the payload's `token`
+`https://app.ziplogger.ai/ingest/v1/mp/...`. You can send the key in the payload's `token`
 property (what the SDKs already do) or as an `X-Api-Key` header; the header wins when both are
 present.
 

@@ -15,7 +15,7 @@ import ziplogger "github.com/ziploggerhq/ZipLogger_Client/sdk_go"
 
 ```go
 client, err := ziplogger.New(ziplogger.Options{
-    Endpoint: "https://app.ziplogger.dev",
+    Endpoint: "https://app.ziplogger.ai",
     APIKey:   os.Getenv("ZIPLOGGER_API_KEY"),
     Source:   "orders-api",
 })
@@ -155,7 +155,7 @@ custom TLS, and tests:
 
 ```go
 client, _ := ziplogger.New(ziplogger.Options{
-    Endpoint:   "https://app.ziplogger.dev",
+    Endpoint:   "https://app.ziplogger.ai",
     APIKey:     "zk_...",
     HTTPClient: &http.Client{Timeout: 3 * time.Second, Transport: myTransport},
 })
@@ -254,7 +254,7 @@ Go has no auto-instrumentation agent, so traces are wired in code with the stand
 
 ```go
 exp, _ := otlptracehttp.New(ctx,
-    otlptracehttp.WithEndpoint("app.ziplogger.dev"),
+    otlptracehttp.WithEndpoint("app.ziplogger.ai"),
     otlptracehttp.WithHeaders(map[string]string{"X-Api-Key": key}),
 )
 tp := sdktrace.NewTracerProvider(

@@ -11,7 +11,7 @@ already set up, so future releases are a tag and nothing else.
 |---|---|---|---|
 | npm | `ziplogger`, `@ziplogger/browser` | create npm account + `ziplogger` org, add `NPM_TOKEN` secret | automatic on tag |
 | PyPI | `ziplogger` | create PyPI account, add a Trusted Publisher | automatic on tag, no token stored |
-| Maven Central | `dev.ziplogger:ziplogger` | Central account, verify `ziplogger.dev` by DNS, GPG key, 4 secrets | automatic on tag |
+| Maven Central | `dev.ziplogger:ziplogger` | Central account, verify `ziplogger.ai` by DNS, GPG key, 4 secrets | automatic on tag |
 | Go module proxy | `github.com/ziploggerhq/ZipLogger_Client/sdk_go` | none, the proxy reads this public repo | tag only |
 | NuGet | `ZipLogger.*` | already done | tag in the platform repo |
 
@@ -47,7 +47,7 @@ Trusted Publishing is worth the extra step: there is no long-lived API token to 
 
 1. Register at <https://central.sonatype.com/> (sign in with GitHub is fine).
 2. Claim the namespace `dev.ziplogger`: **Namespaces → Add Namespace → dev.ziplogger**. Central
-   will show a TXT record to add to the `ziplogger.dev` DNS zone (in Cloudflare: DNS → Records →
+   will show a TXT record to add to the `ziplogger.ai` DNS zone (in Cloudflare: DNS → Records →
    Add record → TXT, name `@`, value as shown). Click Verify once it propagates.
 3. Generate a publishing token at <https://central.sonatype.com/usertoken> and click
    **Generate User Token**. A modal shows a username and password pair. Copy both immediately: the

@@ -16,7 +16,7 @@ import time
 
 from ziplogger import ZipLoggerHandler
 
-ENDPOINT = os.environ.get("ZIPLOGGER_ENDPOINT", "https://app.ziplogger.dev")
+ENDPOINT = os.environ.get("ZIPLOGGER_ENDPOINT", "https://app.ziplogger.ai")
 API_KEY = os.environ.get("ZIPLOGGER_API_KEY", "")
 INTERVAL = float(os.environ.get("DEMO_INTERVAL_SECONDS", "4"))
 

@@ -26,7 +26,7 @@ import (
 
 // Options configures a Client. Endpoint and APIKey are required.
 type Options struct {
-	// Endpoint is the ZipLogger base URL, e.g. "https://app.ziplogger.dev".
+	// Endpoint is the ZipLogger base URL, e.g. "https://app.ziplogger.ai".
 	Endpoint string
 	// APIKey is the tenant ingestion key (zk_...).
 	APIKey string

@@ -1,7 +1,7 @@
 export type Severity = 'debug' | 'info' | 'warn' | 'error' | 'fatal'
 
 export interface BrowserOptions {
-  /** Your ZipLogger origin, e.g. "https://app.ziplogger.dev" (or your own host if
+  /** Your ZipLogger origin, e.g. "https://app.ziplogger.ai" (or your own host if
    *  you self-host). Paths are appended for you. */
   endpoint: string
   /** Tenant ingestion API key (zk_...). Use a key dedicated to browser traffic. */

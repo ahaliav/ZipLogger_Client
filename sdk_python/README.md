@@ -1,6 +1,6 @@
 # ziplogger (Python)
 
-Python `logging` handler for [ZipLogger](https://ziplogger.dev) — batching,
+Python `logging` handler for [ZipLogger](https://ziplogger.ai) — batching,
 retries with backoff (429-aware), drop-on-backpressure, and automatic enrichment.
 **Standard library only** — no dependencies.
 
@@ -18,7 +18,7 @@ from ziplogger import ZipLoggerHandler
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger().addHandler(ZipLoggerHandler(
-    endpoint="https://app.ziplogger.dev",
+    endpoint="https://app.ziplogger.ai",
     api_key="zk_...",
     source="billing-worker",          # optional; defaults to the script name
 ))

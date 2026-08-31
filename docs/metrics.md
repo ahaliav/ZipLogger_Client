@@ -24,7 +24,7 @@ different key or endpoint:
 ```json
 {
   "ZipLogger": {
-    "Endpoint": "https://app.ziplogger.dev",
+    "Endpoint": "https://app.ziplogger.ai",
     "ApiKey": "zk_...",
     "Metrics": {
       "Service": "orders-api",
@@ -39,7 +39,7 @@ Or configure entirely in code:
 ```csharp
 builder.Services.AddZipLoggerMetrics(o =>
 {
-    o.Endpoint = "https://app.ziplogger.dev";
+    o.Endpoint = "https://app.ziplogger.ai";
     o.ApiKey   = "zk_...";
     o.Service  = "orders-api";
     o.ExcludePaths.Add("/internal/ping");
@@ -103,7 +103,7 @@ not, for the same reason route patterns beat literal paths.
 ## Any other stack: POST the metrics endpoint
 
 ```
-POST https://app.ziplogger.dev/ingest/v1/metrics
+POST https://app.ziplogger.ai/ingest/v1/metrics
 X-Api-Key: zk_...
 Content-Type: application/json
 ```
@@ -111,7 +111,7 @@ Content-Type: application/json
 Accepts a **single object** or a **JSON array**.
 
 ```bash
-curl -X POST https://app.ziplogger.dev/ingest/v1/metrics \
+curl -X POST https://app.ziplogger.ai/ingest/v1/metrics \
   -H "X-Api-Key: zk_..." -H "Content-Type: application/json" \
   -d '[
     {"service":"orders-api","name":"request.duration","durationMs":142.7,
@@ -147,7 +147,7 @@ import time, requests, threading
 
 def record(service, route, method, status, ms):
     threading.Thread(target=lambda: requests.post(
-        "https://app.ziplogger.dev/ingest/v1/metrics",
+        "https://app.ziplogger.ai/ingest/v1/metrics",
         headers={"X-Api-Key": "zk_..."},
         json={"service": service, "name": "request.duration", "durationMs": ms,
               "labels": {"method": method, "route": route, "status": status}},
@@ -170,7 +170,7 @@ app.use((req, res, next) => {
   const t0 = process.hrtime.bigint()
   res.on('finish', () => {
     const ms = Number(process.hrtime.bigint() - t0) / 1e6
-    void fetch('https://app.ziplogger.dev/ingest/v1/metrics', {
+    void fetch('https://app.ziplogger.ai/ingest/v1/metrics', {
       method: 'POST',
       headers: { 'X-Api-Key': 'zk_...', 'Content-Type': 'application/json' },
       // req.route?.path is the pattern; req.path would explode cardinality

@@ -100,7 +100,7 @@ Anything that can POST JSON can send events. Same authentication as log ingestio
 (`X-Api-Key`, an ingestion key from **Settings → API keys**):
 
 ```
-POST https://app.ziplogger.dev/ingest/v1/events
+POST https://app.ziplogger.ai/ingest/v1/events
 X-Api-Key: zk_...
 Content-Type: application/json      (or application/x-ndjson)
 ```
@@ -108,7 +108,7 @@ Content-Type: application/json      (or application/x-ndjson)
 Accepts a single object, a JSON array, or NDJSON — the same three shapes as `/ingest/v1/logs`.
 
 ```bash
-curl -X POST https://app.ziplogger.dev/ingest/v1/events \
+curl -X POST https://app.ziplogger.ai/ingest/v1/events \
   -H "X-Api-Key: zk_..." -H "Content-Type: application/json" \
   -d '{"name":"checkout_started","userId":"u-42","sessionId":"s-1","properties":{"amount":129.9}}'
 ```
@@ -146,7 +146,7 @@ off on 429 and drops silently rather than surfacing errors into your app.
 
 ## Limits
 
-Daily event caps are per plan (see [pricing](https://ziplogger.dev/pricing.html)); usage and the
+Daily event caps are per plan (see [pricing](https://ziplogger.ai/pricing.html)); usage and the
 day's remaining quota are on the Events page. Past the cap the API answers `429` + `Retry-After`
 until the UTC day resets — nothing crashes, and accepted events from a partially-over-quota batch
 are kept.

@@ -10,7 +10,7 @@ Read-only, authenticated with a workspace ingestion key.
 ## Connect
 
 ```bash
-claude mcp add ziplogger --transport http https://app.ziplogger.dev/mcp \
+claude mcp add ziplogger --transport http https://app.ziplogger.ai/mcp \
   --header "X-Api-Key: zk_..."
 ```
 
@@ -21,7 +21,7 @@ Any MCP client that speaks streamable HTTP works the same way. The generic form:
   "mcpServers": {
     "ziplogger": {
       "type": "http",
-      "url": "https://app.ziplogger.dev/mcp",
+      "url": "https://app.ziplogger.ai/mcp",
       "headers": { "X-Api-Key": "zk_..." }
     }
   }

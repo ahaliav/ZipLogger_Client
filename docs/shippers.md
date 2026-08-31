@@ -29,7 +29,7 @@ Three rules cover almost every problem people hit:
 [OUTPUT]
     Name             http
     Match            *
-    Host             app.ziplogger.dev
+    Host             app.ziplogger.ai
     Port             443
     TLS              On
     URI              /ingest/v1/logs
@@ -176,7 +176,7 @@ spec:
 [OUTPUT]
     Name    http
     Match   *
-    Host    app.ziplogger.dev
+    Host    app.ziplogger.ai
     Port    443
     TLS     On
     URI     /ingest/v1/logs
@@ -206,7 +206,7 @@ source = '''
 [sinks.ziplogger]
 type = "http"
 inputs = ["shape"]
-uri = "https://app.ziplogger.dev/ingest/v1/logs"
+uri = "https://app.ziplogger.ai/ingest/v1/logs"
 encoding.codec = "json"
 framing.method = "newline_delimited"
 request.headers.X-Api-Key = "zk_..."
@@ -258,7 +258,7 @@ Add batching and compression at the sink for volume:
 [sinks.ziplogger]
 type = "http"
 inputs = ["shape"]
-uri = "https://app.ziplogger.dev/ingest/v1/logs"
+uri = "https://app.ziplogger.ai/ingest/v1/logs"
 encoding.codec = "json"
 framing.method = "newline_delimited"
 compression = "gzip"

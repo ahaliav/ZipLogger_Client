@@ -20,7 +20,7 @@ from ziplogger import ZipLoggerHandler
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger().addHandler(ZipLoggerHandler(
-    endpoint="https://app.ziplogger.dev",
+    endpoint="https://app.ziplogger.ai",
     api_key="zk_...",
     source="billing-worker",          # optional; defaults to the script name
 ))
@@ -73,7 +73,7 @@ LOGGING = {
         "ziplogger": {
             "class": "ziplogger.ZipLoggerHandler",
             "level": "INFO",
-            "endpoint": "https://app.ziplogger.dev",
+            "endpoint": "https://app.ziplogger.ai",
             "api_key": os.environ["ZIPLOGGER_API_KEY"],
             "source": "web",
         },
@@ -137,7 +137,7 @@ Register the filter on the `ziplogger` handler in your `LOGGING` dict
 import logging
 from ziplogger import ZipLoggerHandler
 
-handler = ZipLoggerHandler(endpoint="https://app.ziplogger.dev",
+handler = ZipLoggerHandler(endpoint="https://app.ziplogger.ai",
                           api_key=os.environ["ZIPLOGGER_API_KEY"], source="api")
 logging.getLogger().addHandler(handler)
 logging.getLogger().setLevel(logging.INFO)
@@ -180,7 +180,7 @@ def post_fork(server, worker):
     import logging
     from ziplogger import ZipLoggerHandler
     logging.getLogger().addHandler(ZipLoggerHandler(
-        endpoint="https://app.ziplogger.dev", api_key=os.environ["ZIPLOGGER_API_KEY"],
+        endpoint="https://app.ziplogger.ai", api_key=os.environ["ZIPLOGGER_API_KEY"],
         source=f"web"))
 ```
 
@@ -254,7 +254,7 @@ nothing ZipLogger-specific to install:
 ```bash
 pip install opentelemetry-distro opentelemetry-exporter-otlp
 opentelemetry-bootstrap -a install
-OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.dev \
+OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.ai \
 OTEL_EXPORTER_OTLP_HEADERS=X-Api-Key=zk_... \
 OTEL_SERVICE_NAME=billing-api \
   opentelemetry-instrument gunicorn app:wsgi

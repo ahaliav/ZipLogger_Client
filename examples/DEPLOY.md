@@ -1,14 +1,14 @@
 # Running the demo on your server
 
-The goal: `demo.ziplogger.dev` shows a live storefront, six services report into a demo
+The goal: `demo.ziplogger.ai` shows a live storefront, six services report into a demo
 workspace, and a client can sign in with a read-only account to look around.
 
 ## 1. Create the demo workspace
 
-Sign up at <https://app.ziplogger.dev/signup> with:
+Sign up at <https://app.ziplogger.ai/signup> with:
 
 - **Organization:** `Northwind Coffee` (this is the workspace name a client sees)
-- **Email:** an address you control, for example `demo@ziplogger.dev`
+- **Email:** an address you control, for example `demo@ziplogger.ai`
 - **Password:** anything; you will not hand this out, clients get a separate viewer login
 
 Signup asks for a card because every account is card-gated. Nothing is charged, and the
@@ -49,7 +49,7 @@ docker compose -f docker-compose.demo.yml up -d --build
 The storefront listens on `STOREFRONT_HOST_PORT` (8095 by default). Nothing else
 publishes a port.
 
-## 5. Point demo.ziplogger.dev at it
+## 5. Point demo.ziplogger.ai at it
 
 DNS: an `A` record for `demo` at the server address, proxied through Cloudflare like the
 other hostnames.
@@ -59,10 +59,10 @@ nginx, alongside the existing vhosts:
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name demo.ziplogger.dev;
+    server_name demo.ziplogger.ai;
 
-    ssl_certificate     /etc/letsencrypt/live/ziplogger.dev/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ziplogger.dev/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/ziplogger.ai/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ziplogger.ai/privkey.pem;
 
     location / {
         proxy_pass         http://127.0.0.1:8095;
@@ -79,8 +79,8 @@ Reload with `nginx -t && systemctl reload nginx`.
 ## 6. Check it
 
 ```bash
-curl -s https://demo.ziplogger.dev/config.js
-curl -s https://demo.ziplogger.dev/checkout/health
+curl -s https://demo.ziplogger.ai/config.js
+curl -s https://demo.ziplogger.ai/checkout/health
 docker compose -f docker-compose.demo.yml logs --tail 20 payments
 ```
 

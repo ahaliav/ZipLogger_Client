@@ -7,7 +7,7 @@ cross-language index: find the concept once, then use the column for your langua
 
 | Setting | Value |
 |---|---|
-| Endpoint | `https://app.ziplogger.dev` (the SDKs append `/ingest/v1/logs` for you) |
+| Endpoint | `https://app.ziplogger.ai` (the SDKs append `/ingest/v1/logs` for you) |
 | API key | An ingestion key created under **Settings → API keys**, shaped `zk_...` |
 
 The key travels as the `X-Api-Key` header. Keys can be rotated and revoked independently, so use a
@@ -110,4 +110,4 @@ Do not conditionally wrap your logging calls. Configure the logging framework in
 ## What counts toward your quota
 
 Logs and spans are metered together. Request metrics are not metered as logs. AI requests are
-metered separately per plan. See [pricing](https://ziplogger.dev/pricing.html) for current limits.
+metered separately per plan. See [pricing](https://ziplogger.ai/pricing.html) for current limits.

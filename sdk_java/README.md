@@ -1,6 +1,6 @@
 # ziplogger (Java)
 
-Java SDK for [ZipLogger](https://ziplogger.dev) — a JDK-only client (Java 17+)
+Java SDK for [ZipLogger](https://ziplogger.ai) — a JDK-only client (Java 17+)
 with a `java.util.logging` handler. Batching, retry with backoff (429-aware),
 drop-on-backpressure, automatic enrichment. **Zero dependencies.**
 
@@ -16,7 +16,7 @@ drop-on-backpressure, automatic enrichment. **Zero dependencies.**
 
 ```java
 var client = new ZipLoggerClient(new ZipLoggerClient.Options(
-    "https://app.ziplogger.dev", "zk_..."));
+    "https://app.ziplogger.ai", "zk_..."));
 
 client.log(new ZipLoggerClient.Entry()
     .message("order created")

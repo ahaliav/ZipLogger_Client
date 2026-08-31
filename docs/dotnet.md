@@ -22,7 +22,7 @@ dotnet add package ZipLogger.Extensions.Logging
 // Program.cs
 builder.Logging.AddZipLogger(options =>
 {
-    options.Endpoint = "https://app.ziplogger.dev";
+    options.Endpoint = "https://app.ziplogger.ai";
     options.ApiKey   = "zk_...";
 });
 ```
@@ -33,7 +33,7 @@ Or configure from `appsettings.json` and call `builder.Logging.AddZipLogger();` 
 {
   "Logging": {
     "ZipLogger": {
-      "Endpoint": "https://app.ziplogger.dev",
+      "Endpoint": "https://app.ziplogger.ai",
       "ApiKey": "zk_...",
       "LogLevel": {
         "Default": "Information",
@@ -113,7 +113,7 @@ dotnet add package ZipLogger.Serilog
 
 ```csharp
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.ZipLogger("https://app.ziplogger.dev", "zk_...")
+    .WriteTo.ZipLogger("https://app.ziplogger.ai", "zk_...")
     .CreateLogger();
 ```
 
@@ -124,7 +124,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.ZipLogger(
-        endpoint: "https://app.ziplogger.dev",
+        endpoint: "https://app.ziplogger.ai",
         apiKey: "zk_...",
         configure: o =>
         {
@@ -158,7 +158,7 @@ dotnet add package ZipLogger.Client
 ```csharp
 await using ILogShipper shipper = new ZipLoggerShipper(new ZipLoggerClientOptions
 {
-    Endpoint = "https://app.ziplogger.dev",
+    Endpoint = "https://app.ziplogger.ai",
     ApiKey   = "zk_...",
     Source   = "import-tool",
 });
@@ -279,7 +279,7 @@ before the batch ships:
 ```csharp
 using var factory = LoggerFactory.Create(b => b.AddZipLogger(o =>
 {
-    o.Endpoint = "https://app.ziplogger.dev";
+    o.Endpoint = "https://app.ziplogger.ai";
     o.ApiKey = "zk_...";
     o.FlushInterval = TimeSpan.FromMilliseconds(250);
 }));

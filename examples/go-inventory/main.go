@@ -99,7 +99,7 @@ func syncOnce(log *slog.Logger) {
 }
 
 func main() {
-	endpoint := envOr("ZIPLOGGER_ENDPOINT", "https://app.ziplogger.dev")
+	endpoint := envOr("ZIPLOGGER_ENDPOINT", "https://app.ziplogger.ai")
 	apiKey := os.Getenv("ZIPLOGGER_API_KEY")
 	if apiKey == "" {
 		fmt.Fprintln(os.Stderr, "ZIPLOGGER_API_KEY is required")

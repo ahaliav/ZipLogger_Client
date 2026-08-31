@@ -6,7 +6,7 @@ Usage::
     from ziplogger import ZipLoggerHandler
 
     logging.getLogger().addHandler(ZipLoggerHandler(
-        endpoint="https://app.ziplogger.dev",
+        endpoint="https://app.ziplogger.ai",
         api_key="zk_...",
     ))
 """

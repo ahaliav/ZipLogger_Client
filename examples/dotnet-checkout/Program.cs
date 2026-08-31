@@ -26,7 +26,7 @@ using ZipLogger.Metrics.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var endpoint = Environment.GetEnvironmentVariable("ZIPLOGGER_ENDPOINT") ?? "https://app.ziplogger.dev";
+var endpoint = Environment.GetEnvironmentVariable("ZIPLOGGER_ENDPOINT") ?? "https://app.ziplogger.ai";
 var apiKey = Environment.GetEnvironmentVariable("ZIPLOGGER_API_KEY") ?? "";
 var environment = Environment.GetEnvironmentVariable("ZIPLOGGER_ENVIRONMENT") ?? "production";
 

@@ -1,6 +1,6 @@
 # @ziplogger/browser
 
-Browser SDK for [ZipLogger](https://ziplogger.dev) — product-analytics events,
+Browser SDK for [ZipLogger](https://ziplogger.ai) — product-analytics events,
 uncaught errors, unhandled promise rejections and distributed tracing from web apps, with a
 first-class React error boundary. Zero dependencies.
 
@@ -14,7 +14,7 @@ npm install @ziplogger/browser
 import { ZipLoggerBrowser } from '@ziplogger/browser'
 
 export const ziplogger = new ZipLoggerBrowser({
-  endpoint: 'https://app.ziplogger.dev',
+  endpoint: 'https://app.ziplogger.ai',
   apiKey: 'zk_...',            // use a key dedicated to browser traffic
   release: import.meta.env.VITE_APP_VERSION,
 })

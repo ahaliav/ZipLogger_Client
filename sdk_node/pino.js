@@ -6,7 +6,7 @@
  *   const pino = require('pino')
  *   const logger = pino(pino.transport({
  *     target: 'ziplogger/pino',
- *     options: { endpoint: 'https://app.ziplogger.dev', apiKey: 'zk_...' },
+ *     options: { endpoint: 'https://app.ziplogger.ai', apiKey: 'zk_...' },
  *   }))
  *
  * Runs in pino's worker thread via `pino-abstract-transport` (peer dependency):

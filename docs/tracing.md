@@ -10,8 +10,8 @@ tells you where the request was when it failed and what it was waiting on.
 ## Endpoint
 
 ```
-POST https://app.ziplogger.dev/v1/traces
-POST https://app.ziplogger.dev/ingest/v1/otlp/traces     (alias)
+POST https://app.ziplogger.ai/v1/traces
+POST https://app.ziplogger.ai/ingest/v1/otlp/traces     (alias)
 X-Api-Key: zk_...
 Content-Type: application/x-protobuf   (or application/json)
 ```
@@ -25,7 +25,7 @@ The exporter appends `/v1/traces` to the endpoint itself, so give it the origin 
 
 ```bash
 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.dev
+OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.ai
 OTEL_EXPORTER_OTLP_HEADERS=X-Api-Key=zk_...
 OTEL_SERVICE_NAME=orders-api
 OTEL_RESOURCE_ATTRIBUTES=service.version=2026.8.1,deployment.environment=production
@@ -77,8 +77,8 @@ Go has no auto-instrumentation agent, so wire the OTLP trace exporter and the `o
 ```yaml
 exporters:
   otlphttp/ziplogger:
-    logs_endpoint: https://app.ziplogger.dev/v1/logs
-    traces_endpoint: https://app.ziplogger.dev/v1/traces
+    logs_endpoint: https://app.ziplogger.ai/v1/logs
+    traces_endpoint: https://app.ziplogger.ai/v1/traces
     headers: { X-Api-Key: "zk_..." }
     compression: gzip
 
@@ -201,7 +201,7 @@ them.
 
 | Symptom | Check |
 |---|---|
-| No traces at all | The exporter endpoint is the **origin** (`https://app.ziplogger.dev`); the SDK appends `/v1/traces`. Setting the full path yields `/v1/traces/v1/traces`. |
+| No traces at all | The exporter endpoint is the **origin** (`https://app.ziplogger.ai`); the SDK appends `/v1/traces`. Setting the full path yields `/v1/traces/v1/traces`. |
 | `401` | The key travels as `OTEL_EXPORTER_OTLP_HEADERS=X-Api-Key=zk_...`, with no `Bearer` prefix. |
 | `415` | Content type must be `application/x-protobuf` or `application/json`. |
 | Service shows as `unknown` | Set `OTEL_SERVICE_NAME` or the `service.name` resource attribute. |

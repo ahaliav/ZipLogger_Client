@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://ziplogger.dev"
+Homepage = "https://ziplogger.ai"
 Documentation = "https://github.com/ziploggerhq/ZipLogger_Client/blob/main/docs/python.md"
 Source = "https://github.com/ziploggerhq/ZipLogger_Client"
 Issues = "https://github.com/ziploggerhq/ZipLogger_Client/issues"

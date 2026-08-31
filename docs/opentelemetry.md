@@ -16,7 +16,7 @@ For traces, see [distributed tracing](tracing.md). The same key and the same ori
 
 ```bash
 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.dev   # exporter appends /v1/logs
+OTEL_EXPORTER_OTLP_ENDPOINT=https://app.ziplogger.ai   # exporter appends /v1/logs
 OTEL_EXPORTER_OTLP_HEADERS=X-Api-Key=zk_...
 OTEL_SERVICE_NAME=orders-api
 OTEL_RESOURCE_ATTRIBUTES=service.version=2026.8.1,deployment.environment=production
@@ -28,8 +28,8 @@ here produces `/v1/logs/v1/logs` and nothing arrives.
 To send logs but not traces (or the reverse), use the signal-specific variables:
 
 ```bash
-OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://app.ziplogger.dev/v1/logs
-OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://app.ziplogger.dev/v1/traces
+OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://app.ziplogger.ai/v1/logs
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://app.ziplogger.ai/v1/traces
 ```
 
 Signal-specific endpoints take the **full path**, unlike the shared one. This trips up most first
@@ -92,8 +92,8 @@ processors:
 
 exporters:
   otlphttp/ziplogger:
-    logs_endpoint: https://app.ziplogger.dev/v1/logs
-    traces_endpoint: https://app.ziplogger.dev/v1/traces
+    logs_endpoint: https://app.ziplogger.ai/v1/logs
+    traces_endpoint: https://app.ziplogger.ai/v1/traces
     headers: { X-Api-Key: "zk_..." }
     compression: gzip
     retry_on_failure:

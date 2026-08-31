@@ -22,7 +22,7 @@ const config = window.NORTHWIND_CONFIG || {}
 const API = (config.apiBase || 'http://localhost:5299').replace(/\/+$/, '')
 
 const zl = new ZipLoggerBrowser({
-  endpoint: config.endpoint || 'https://app.ziplogger.dev',
+  endpoint: config.endpoint || 'https://app.ziplogger.ai',
   apiKey: config.apiKey || '',
   source: 'storefront',
   environment: config.environment || 'production',

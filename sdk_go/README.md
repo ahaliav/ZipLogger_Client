@@ -1,6 +1,6 @@
 # ziplogger (Go)
 
-Go SDK for [ZipLogger](https://ziplogger.dev) — a standard-library-only client
+Go SDK for [ZipLogger](https://ziplogger.ai) — a standard-library-only client
 with a first-class `log/slog` handler. Batching, retry with backoff (429-aware),
 drop-on-backpressure, automatic enrichment. Go ≥ 1.21.
 
@@ -12,7 +12,7 @@ go get github.com/ziploggerhq/ZipLogger_Client/sdk_go
 
 ```go
 client, err := ziplogger.New(ziplogger.Options{
-    Endpoint: "https://app.ziplogger.dev",
+    Endpoint: "https://app.ziplogger.ai",
     APIKey:   "zk_...",
 })
 if err != nil { panic(err) }
